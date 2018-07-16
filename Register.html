@@ -25,53 +25,71 @@
                 Code Review System
             </h2>
         </div>
-        <div class="row">
-            <div class="col-sm-8">
-                <div class="text-center alert alert-default">
-                    <strong class>User Registration Form</strong>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-8">
+                    <div class="text-center alert alert-default">
+                        <strong class>User Registration Form</strong>
+                    </div>
+                    <div>
+                        <form method="post" onsubmit="return ValidatePassword()" action="/registeruser">
+                            <div class="form-group">
+                                <label class="form-group">First name:</label>
+                                <input class="form-control" type="text" name="FirstName" placeholder="firstname" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-group">Last name:</label>
+                                <input class="form-control" type="text" name="LastName" placeholder="lastname" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-group">Username:</label>
+                                <input class="form-control" type="text" name="UserName" placeholder="username" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-group">Mail ID:</label>
+                                <input class="form-control" type="email" name="MailID" placeholder="someone@somedomain.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-group">Password:</label><br>
+                                <input class="fomr-control" type="password" id="Password" name="Password" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-group">Confirm Password:</label><br>
+                                <input class="fomr-control" type="password" id="ConfirmPassword" name="ConfirmPassword" required>
+                            </div> 
+                            <div class="fomr-group">
+                                <button class="btn btn-dark">Register</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                <div>
-                    <form method="post" onsubmit="return ValidatePassword()" action="/registeruser">
-                        <div class="form-group col-sm-8">
-                            <label class="form-group">First name:</label>
-                            <input class="form-control" type="text" name="FirstName" placeholder="firstname" required>
-                        </div>
-                        <div class="form-group col-sm-8">
-                            <label class="form-group">Last name:</label>
-                            <input class="form-control" type="text" name="LastName" placeholder="lastname" required>
-                        </div>
-                        <div class="form-group col-sm-8">
-                            <label class="form-group">Username:</label>
-                            <input class="form-control" type="text" name="UserName" placeholder="username" required>
-                        </div>
-                        <div class="form-group col-sm-8">
-                            <label class="form-group">Mail ID:</label>
-                            <input class="form-control" type="email" name="MailID" placeholder="someone@somedomain.com" required>
-                        </div>
-                        <div class="form-group col-sm-8">
-                            <label class="form-group">Password:</label><br>
-                            <input class="fomr-control" type="password" id="Password" name="Password" required>
-                        </div>
-                        <div class="form-group col-sm-8">
-                            <label class="form-group">Confirm Password:</label><br>
-                            <input class="fomr-control" type="password" id="ConfirmPassword" name="ConfirmPassword" required>
-                        </div> 
-                        <div class="fomr-group col-sm-8">
-                            <button class="btn btn-dark">Register</button>
-                        </div>
-                    </form>
+                <div class="col-1"></div>
+                <div class="col-3">
+                    <ul class="nav nav-pills bg-dark flex-column">
+                        <li class="nav-item border-bottom">
+                            <a class="nav-pills nav-link text-white" href="/">Home</a>
+                        </li>
+                        <li class="nav-item border-bottom">
+                            <a class="nav-pills nav-link text-white" href="/">Need to add more...</a>
+                        </li>
+                        <li class="nav-item border-bottom">
+                            <a class="nav-pills nav-link text-white" href="/">...</a>
+                        </li>
+                        <li class="nav-item border-bottom">
+                            <a class="nav-pills nav-link text-white" href="/">...</a>
+                        </li>
+                        <li class="nav-item border-bottom">
+                            <a class="nav-pills nav-link text-white" href="/">...</a>
+                        </li>
+                        <li class="nav-item border-bottom">
+                            <a class="nav-pills nav-link text-white" href="/">...</a>
+                        </li>
+                                    
+                    </ul>
                 </div>
-            </div>
-            <div class="col-sm-1"></div>
-            <div class="col-sm-3 btn-group-vertical">
-                <button onclick="DirectToHome()" class="btn btn-dark">Home</button>
-                <button onclick="" class="btn btn-dark">more buttons to be added vertically...</button>
-                <button onclick="" class="btn btn-dark">...</button>
-                <button onclick="" class="btn btn-dark">...</button>
-                <button onclick="" class="btn btn-dark">...</button>
-                <button onclick="" class="btn btn-dark">...</button>
             </div>
         </div>
+        
         
     
         <script type="text/javascript">
