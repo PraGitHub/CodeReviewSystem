@@ -26,46 +26,54 @@
             </h2>
         </div>
         <div class="row">
-            <div class="col-sm-8 alert alert-default text-center">
-                <strong>User Registration Form</strong>
+            <div class="col-sm-8">
+                <div class="text-center alert alert-default">
+                    <strong class>User Registration Form</strong>
+                </div>
+                <div>
+                    <form method="post" onsubmit="return ValidatePassword()" action="/registeruser">
+                        <div class="form-group col-sm-8">
+                            <label class="form-group">First name:</label>
+                            <input class="form-control" type="text" name="FirstName" placeholder="firstname" required>
+                        </div>
+                        <div class="form-group col-sm-8">
+                            <label class="form-group">Last name:</label>
+                            <input class="form-control" type="text" name="LastName" placeholder="lastname" required>
+                        </div>
+                        <div class="form-group col-sm-8">
+                            <label class="form-group">Username:</label>
+                            <input class="form-control" type="text" name="UserName" placeholder="username" required>
+                        </div>
+                        <div class="form-group col-sm-8">
+                            <label class="form-group">Mail ID:</label>
+                            <input class="form-control" type="email" name="MailID" placeholder="someone@somedomain.com" required>
+                        </div>
+                        <div class="form-group col-sm-8">
+                            <label class="form-group">Password:</label><br>
+                            <input class="fomr-control" type="password" id="Password" name="Password" required>
+                        </div>
+                        <div class="form-group col-sm-8">
+                            <label class="form-group">Confirm Password:</label><br>
+                            <input class="fomr-control" type="password" id="ConfirmPassword" name="ConfirmPassword" required>
+                        </div> 
+                        <div class="fomr-group col-sm-8">
+                            <button class="btn btn-dark">Register</button>
+                        </div>
+                    </form>
+                </div>
             </div>
             <div class="col-sm-1"></div>
-            <div class="col-sm-2 text-center alert alert-primary">
-                <strong><a href="/">Home</a></strong>
+            <div class="col-sm-3 btn-group-vertical">
+                <button onclick="DirectToHome()" class="btn btn-dark">Home</button>
+                <button onclick="" class="btn btn-dark">more buttons to be added vertically...</button>
+                <button onclick="" class="btn btn-dark">...</button>
+                <button onclick="" class="btn btn-dark">...</button>
+                <button onclick="" class="btn btn-dark">...</button>
+                <button onclick="" class="btn btn-dark">...</button>
             </div>
         </div>
         
-        <div>
-            <form method="post" onsubmit="return ValidatePassword()" action="/registeruser">
-                <div class="form-group col-sm-8">
-                    <label class="form-group">First name:</label>
-                    <input class="form-control" type="text" name="FirstName" placeholder="firstname" required>
-                </div>
-                <div class="form-group col-sm-8">
-                    <label class="form-group">Last name:</label>
-                    <input class="form-control" type="text" name="LastName" placeholder="lastname" required>
-                </div>
-                <div class="form-group col-sm-8">
-                    <label class="form-group">Username:</label>
-                    <input class="form-control" type="text" name="UserName" placeholder="username" required>
-                </div>
-                <div class="form-group col-sm-8">
-                    <label class="form-group">Mail ID:</label>
-                    <input class="form-control" type="email" name="MailID" placeholder="someone@somedomain.com" required>
-                </div>
-                <div class="form-group col-sm-8">
-                    <label class="form-group">Password:</label><br>
-                    <input class="fomr-control" type="password" id="Password" name="Password" required>
-                </div>
-                <div class="form-group col-sm-8">
-                    <label class="form-group">Confirm Password:</label><br>
-                    <input class="fomr-control" type="password" id="ConfirmPassword" name="ConfirmPassword" required>
-                </div> 
-                <div class="fomr-group col-sm-8">
-                    <button class="btn btn-dark">Register</button>
-                </div>
-            </form>
-        </div>
+    
         <script type="text/javascript">
             function ValidatePassword(){
                 var strPassword = document.getElementById("Password");
@@ -75,6 +83,9 @@
                     return false;
                 }
                 return true;
+            }
+            function DirectToHome(){
+                location.href = "/";
             }
         </script>
     </body>
