@@ -40,14 +40,11 @@
         </li>
     </ul>
     <div class="tab-content">
+        <br>
         <div class="tab-pane container active" id="Home">
-            <div class="alert alert-success text-center">
-                <strong>Code Review System Home</strong>
-            </div>
-            <br>
             <div class="row">
                 <div class="col-sm-4">
-                    <div class="alert alert-default text-center">
+                    <div class="alert alert-primary text-center">
                         <strong>User Login</strong>
                     </div>
                     <form method="post" action="/login">
@@ -75,22 +72,41 @@
                 </div>
                 <br>
                 <div class="col-sm-8">
-                    <div class="alert alert-default text-center">
+                    <div class="alert alert-primary text-center">
                         <strong>
-                            This will contain statistics.
+                           Statistics
                         </strong>
                     </div>
                 </div>
             </div>
         </div>
         <div class="tab-pane container fade" id="Profile">
-
+            <div class="alert alert-info">
+                <strong>
+                    We need to populte user profile here. User profile has to be populated based on User Data Structure.<br>
+                    User Structure : UserID, username, password, MailID, first name, lastname, num requests,<br>
+                    num successful requests, num failed requests, num requests in progress, project,
+                    requests(JSON of Request IDs),reviews(JSON of Request IDs).
+                </strong>
+            </div>
         </div>
         <div class="tab-pane container fade" id="Requests">
-
+            <div class="alert alert-warning">
+                <strong>
+                    List of all requests made by this user.<br>
+                    Whenever a user logs in we will get the user data structure.<br>
+                    We need to get the request data structure of every requests and populate this part of UI.<br>
+                </strong>
+            </div>
         </div>
         <div class="tab-pane container fade" id="Reviews">
-
+            <div class="alert alert-danger">
+                <strong>
+                    List of all reviews made by this user.<br>
+                    Whenever a user logs in we will get the user data structure.<br>
+                    We need to get the request data structure of every reviews and populate this part of UI.<br>
+                </strong
+            </div>
         </div>
     </div>
     <script type="text/javascript">
