@@ -84,21 +84,22 @@
             <div class="alert alert-info">
                 <strong>
                     We need to populte user profile here. User profile has to be populated based on User Data Structure.<br>
-                    User Structure : UserID, username, password, MailID, first name, lastname, num requests,<br>
-                    num successful requests, num failed requests, num requests in progress, project,
+                    User Structure : UserID, username, password, MailID, first name, lastname,<br>
+                     num requests made, num reviews made, num successful requests, num failed requests, num requests in progress, project,<br>
                     requests(JSON of Request IDs),reviews(JSON of Request IDs).
                 </strong>
             </div>
         </div>
         <div class="tab-pane container fade" id="Requests">
             <div class="alert alert-warning">
-                <strong>
+                <strong></strong>
                     List of all requests made by this user.<br>
                     Whenever a user logs in we will get the user data structure.<br>
                     We need to get the request data structure of every requests and populate this part of UI.<br>
                     Request Structure : RequestID, RevieweeID, ReviewerID, File, FileModified, FileConflict,<br>
-                    NoteToReviewer,Project,Status(in progress, cancelled,success, fail),<br>
-                    IsLocked(if this is being used by any one of the 2 users),ReviewerReadStatus.
+                    NoteToReviewer(will be filled by reviewee),NoteToReviewee(will be filled by reviewer),<br>
+                    Project,Status(in progress, cancelled,success, fail),<br>
+                    IsLocked(if this is being used by any one of the 2 users),ReviewerReadStatus,CancelledBy(None,ReviewerID,RevieweeID).
                 </strong>
             </div>
         </div>
