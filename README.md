@@ -25,7 +25,7 @@ https://www.npmjs.com/package/react-navbar
  
  Copy these files to any folder of your choice.
  
- Run the command - "npm init"
+ Run the command - "npm install"
  
  Run the command - "node MainScript.js -port:PortNumber"
         PortNumber - Can be any unused port @ that time.
