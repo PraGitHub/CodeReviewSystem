@@ -1,0 +1,24 @@
+{
+  "name": "codereviewsystem",
+  "version": "1.0.0",
+  "description": "NodeJS   |   MongoDB   |   html5+bootstrap4+AngularJS",
+  "main": "HelperFunctions.js",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PraGitHub/CodeReviewSystem.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PraGitHub/CodeReviewSystem/issues"
+  },
+  "homepage": "https://github.com/PraGitHub/CodeReviewSystem#readme"
+}
