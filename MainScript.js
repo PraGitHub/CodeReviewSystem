@@ -19,3 +19,16 @@ app.get('/',function(httpReq,httpRes){
 app.get('/register',function(httpReq,httpRes){
     httpRes.sendFile(__dirname+'/Register.html');
 });
+
+app.post('/projects/add',function(httpReq,httpRes){
+    var bIsSuperuser = helper.IsSuperuser(httpReq.username,httpReq.password);
+    if(bIsSuperuser){
+        var strMessage = helper.InsertProject(httpReq.projectname);
+        httpRes.write(helper.GetHTMLResponse({'message':strMessage,'alert':'success'}));
+        httpRes.end();
+    }
+    else{
+        httpRes.write(helper.GetHTMLResponse({'message':'You are not a superuser','alert':'danger'}));
+        httpRes.end();
+    }
+});
