@@ -1,4 +1,5 @@
 var dbHandler = require(__dirname+'/DatabaseHandler.js');
+var fs = require('fs');
 
 var fpGetHttpPort = function GetHttpPort(){
     var strPort = "";
@@ -14,12 +15,20 @@ var fpGetHttpPort = function GetHttpPort(){
     return strPort;
 }
 
-var fpAddProjectDropDown = function AddProjectDropDown(strHTML){
+var fpAddProjectDropDown = function AddProjectDropDown(strHTMLPath){
+    var strHTML = fs.readFileSync(strHTMLPath).toString();
     var strKeyWord = '<!--PROJECTDROPDOWN-->';
     var iPos = strHTML.indexOf(strKeyWord);
     var strPreProjectDropDown = strHTML.substr(0,iPos+strKeyWord.length);
     var strPostProjectDropDown = strHTML.substr(iPos+strKeyWord.length);
-
+    var strProjectDropDown = "";
+    /*
+    Fill strProjectDropDown with proper html format with project list
+        Obtain Project list from database.
+        Compose the HTML
+    */
+    var strToReturn = strPreProjectDropDown+strProjectDropDown+strPostProjectDropDown;
+    return strToReturn;
 }
 
 var fpIsSuperuser = function IsSuperuser(strUsername,strPassword){

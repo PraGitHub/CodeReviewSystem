@@ -13,7 +13,9 @@ app.listen(httpPort,function(err,res){
 });
 
 app.get('/',function(httpReq,httpRes){
-    httpRes.sendFile(__dirname+'/Home.html');
+    var strHTMLToSend = helper.AddProjectDropDown(__dirname+'/Home.html');
+    httpRes.write(strHTMLToSend);
+    httpRes.end();
 });
 
 app.get('/register',function(httpReq,httpRes){
