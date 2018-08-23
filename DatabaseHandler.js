@@ -25,6 +25,11 @@ var fpInsert = function Insert(dbCollection,JSONData){
         }
     });
     return bRetval;
+    /*
+    Need to understand how to get the value of 'bRetVal' from callback
+    Bascially i do not know how call back works in node. 
+    Need to understand that first so that i will get some idea
+    */
 }
 
 module.exports.Insert = fpInsert;
