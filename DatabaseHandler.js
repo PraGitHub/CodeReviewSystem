@@ -29,6 +29,8 @@ var fpInsert = function Insert(dbCollection,JSONData){
     Need to understand how to get the value of 'bRetVal' from callback
     Bascially i do not know how call back works in node. 
     Need to understand that first so that i will get some idea
+    Useful links:
+        https://stackoverflow.com/questions/23339907/returning-a-value-from-callback-function-in-node-js
     */
 }
 
