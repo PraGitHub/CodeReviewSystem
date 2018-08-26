@@ -22,10 +22,10 @@ app.get('/register',function(httpReq,httpRes){
     httpRes.sendFile(__dirname+'/Register.html');
 });
 
-app.post('/projects/add',function(httpReq,httpRes){
-    var bIsSuperuser = helper.IsSuperuser(httpReq.username,httpReq.password);
+app.post('/project/add',function(httpReq,httpRes){
+    var bIsSuperuser = helper.IsSuperuser(httpReq.body.username,httpReq.body.password);
     if(bIsSuperuser){
-        var strMessage = helper.InsertProject(httpReq.projectname);
+        var strMessage = helper.InsertProject(httpReq.body.projectname);
         httpRes.write(helper.GetHTMLResponse({'message':strMessage,'alert':'success'}));
         httpRes.end();
     }

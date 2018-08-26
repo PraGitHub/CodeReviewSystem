@@ -1,4 +1,5 @@
 var dbHandler = require(__dirname+'/DatabaseHandler.js');
+var defines = require(__dirname+'/Defines.js');
 var fs = require('fs');
 
 var fpGetHttpPort = function GetHttpPort(){
@@ -36,6 +37,17 @@ var fpIsSuperuser = function IsSuperuser(strUsername,strPassword){
     Check for that username an password in 'SuperUser' collection
     return true or false based on the existence
     */
+   var bRetVal = false;
+   var jsonData = {
+       username:strUsername,
+       password:strPassword
+   };
+   var jsonResponse = dbHandler.Query(defines.dbDefines.Collection.superusers,jsonData);
+   if(jsonResponse.iResult == defines.dbDefines.Code.DataFound){
+       bRetVal = true;
+   }
+   //console.log(jsonResponse);
+   return bRetVal;
 }
 
 var fpInsertProject = function InsertProject(strProjectName){
@@ -44,6 +56,23 @@ var fpInsertProject = function InsertProject(strProjectName){
     Else Insert and return a message - Successfully added. 
         In case of any error then return that error message
     */
+   var jsonData = {title:strProjectName};
+   var strToReturn = '';
+   jsonResponse = dbHandler.Query(defines.dbDefines.Collection.projects,jsonData);
+   if(jsonResponse.iResult == defines.dbDefines.Code.DataNotFound){
+       jsonResponse = dbHandler.Insert(defines.dbDefines.Collection.projects,jsonData);
+       if(jsonResponse.iResult == defines.dbDefines.Code.DataAdded){
+           strToReturn = strProjectName +' is added to database';
+       }
+       else{
+           console.log('InsertProject :: Data cannot be added',jsonResponse);
+           strToReturn = 'Failure in adding '+strProjectName+' to database';
+       }
+   }
+   else{
+       strToReturn = strProjectName + ' already exists in database';
+   }
+   return strToReturn;
 }
 
 var fpGetHTMLResponse = function GetHTMLResponse(JSONInputs = {
@@ -53,9 +82,37 @@ var fpGetHTMLResponse = function GetHTMLResponse(JSONInputs = {
     /*
     Compose a html message based on the alert type. Return the string containing that message
     */
+   var strToReturn = '';
+   strToReturn = fs.readFileSync(__dirname+'/Result.html').toString();
+   strToReturn += '<br>';
+   strToReturn += '<div class="container-fluid">';
+   strToReturn += '<div class="row">';
+   strToReturn += '<div class="col-7">';
+   strToReturn += '<div class="alert alert-'+JSONInputs.alert+'">';
+   strToReturn += '<strong><pre>';
+   strToReturn += JSONInputs.message;
+   strToReturn += '</pre></strong>';
+   strToReturn += '</div>';
+   strToReturn += '</div>';
+   strToReturn += '<div class="col-2">';
+   strToReturn += '</div>';
+   strToReturn += '<div class="col-3">';
+   strToReturn += '<ul class="nav nav-pills bg-dark flex-column">';
+   strToReturn += '<li class="nav-item border-bottom">';
+   strToReturn += '<a class="nav-pills nav-link text-white" href="/">Home</a>';
+   strToReturn += '</li>';
+   strToReturn += '</ul>';
+   strToReturn += '</div>';
+   strToReturn += '</div>';
+   strToReturn += '</div>';
+   strToReturn += '<br>';
+   return strToReturn;
 }
 
 module.exports.GetHttpPort = fpGetHttpPort;
 module.exports.AddProjectDropDown = fpAddProjectDropDown;
 module.exports.IsSuperuser = fpIsSuperuser;
 module.exports.InsertProject = fpInsertProject;
+module.exports.GetHTMLResponse = fpGetHTMLResponse;
+module.exports.InsertProject = fpInsertProject;
+module.exports.IsSuperuser = fpIsSuperuser;

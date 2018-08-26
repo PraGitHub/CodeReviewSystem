@@ -1,37 +1,79 @@
 var dbURL = "mongodb://localhost:27017/";
 var mongoClient = require('mongodb').MongoClient;
-var CollectionList = ['Projects','Users','SuperUser'];
+var deasync = require('deasync');
+var defines = require(__dirname+'/Defines.js');
+//var CollectionList = ['Projects','Users','SuperUser'];
 var JSONCollection = {};
-mongoClient.connect(dbURL, function (err, db) {
+mongoClient.connect(dbURL, {useNewUrlParser:true},function (err, db) {
     if (err) throw err;
     console.log("DB Strated...");
     dbObject = db.db("CodeReviewSystem");
-    for(let i in CollectionList){
-        var strCollectionName = CollectionList[i];
+    for(let i in defines.dbDefines.Collection){
+        var strCollectionName = defines.dbDefines.Collection[i];
         dbObject.createCollection(strCollectionName, function (err, res) {
             if (err) throw err;
             console.log(res.s.name,"Collection Created...")
         });
         JSONCollection[strCollectionName] = dbObject.collection(strCollectionName);
     }
-    console.log('JSONCollection :: ',JSONCollection);
+    //console.log('JSONCollection :: ',JSONCollection);
 });
 
-var fpInsert = function Insert(dbCollection,JSONData){
-    var bRetval = true;
-    dbCollection.insertOne(JSONData,function(err,res){
+var fpInsert = function Insert(strCollectionName,JSONData,iLimit=1){
+    var dbCollection = JSONCollection[strCollectionName];
+    var jsonReturn = {};
+    jsonReturn['iResult'] = undefined;
+    jsonReturn['jsonResponse'] = undefined;
+    dbCollection.insertOne(JSONData,function(err,result){
         if(err){
-            bRetval = false;
+            jsonReturn.iResult = defines.dbDefines.Code.Error;
+        }
+        else{
+            jsonReturn.jsonResponse = result.result;
+            if(result != null || result != undefined){
+                jsonReturn.iResult = defines.dbDefines.Code.DataAdded;
+            }
+            else{
+                jsonReturn.iResult = defines.dbDefines.Code.DataNotAdded;
+            }
         }
     });
-    return bRetval;
-    /*
-    Need to understand how to get the value of 'bRetVal' from callback
-    Bascially i do not know how call back works in node. 
-    Need to understand that first so that i will get some idea
-    Useful links:
-        https://stackoverflow.com/questions/23339907/returning-a-value-from-callback-function-in-node-js
-    */
+    while(jsonReturn.iResult === undefined || jsonReturn.jsonResponse === undefined) deasync.sleep(1);
+    //console.log(jsonReturn);
+    return jsonReturn;
 }
 
+var fpQuery = function Query(strCollectionName,JSONQuery,iLimit = 1){
+    var dbCollection = JSONCollection[strCollectionName];
+    var jsonReturn = {};
+    jsonReturn['iResult'] = undefined;
+    jsonReturn['jsonResponse'] = undefined;
+    dbCollection.find(JSONQuery).limit(iLimit).next(function(err,result){
+        if(err){
+            jsonReturn.iResult = defines.dbDefines.Code.Error;
+        }
+        else{
+            jsonReturn.jsonResponse = result;
+            if(result != null || result != undefined){
+                jsonReturn.iResult = defines.dbDefines.Code.DataFound;
+            }
+            else{
+                jsonReturn.iResult = defines.dbDefines.Code.DataNotFound;
+            }
+        }
+    });
+    while(jsonReturn.iResult === undefined || jsonReturn.jsonResponse === undefined) deasync.sleep(1);
+    //console.log(jsonReturn);
+    return jsonReturn;
+}
+
+/*
+deasync.sleep(5000);
+ret = fpInsert(JSONCollection['Projects'],{title:'ProjectHou'});
+console.log("insert returned :",ret);
+ret = fpQuery(JSONCollection['Projects'],{title:'ProjectHoun'});
+console.log('query returned :',ret);
+*/
+
 module.exports.Insert = fpInsert;
+module.exports.Query = fpQuery;
