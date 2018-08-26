@@ -39,7 +39,7 @@ var fpIsSuperuser = function IsSuperuser(strUsername,strPassword){
     */
    var bRetVal = false;
    var jsonData = {
-       username:strUsername,
+       username:strUsername.toUpperCase(),
        password:strPassword
    };
    var jsonResponse = dbHandler.Query(defines.dbDefines.Collection.superusers,jsonData);
@@ -50,16 +50,17 @@ var fpIsSuperuser = function IsSuperuser(strUsername,strPassword){
    return bRetVal;
 }
 
-var fpInsertProject = function InsertProject(strProjectName){
+var fpInsertProject = function InsertProject(strProjectName,strUserName){
     /*
     If exists return a message - Project name exists
     Else Insert and return a message - Successfully added. 
         In case of any error then return that error message
     */
-   var jsonData = {title:strProjectName};
+   var jsonData = {title:strProjectName.toUpperCase()};
    var strToReturn = '';
    jsonResponse = dbHandler.Query(defines.dbDefines.Collection.projects,jsonData);
    if(jsonResponse.iResult == defines.dbDefines.Code.DataNotFound){
+       jsonData['addedby'] = strUserName.toUpperCase();
        jsonResponse = dbHandler.Insert(defines.dbDefines.Collection.projects,jsonData);
        if(jsonResponse.iResult == defines.dbDefines.Code.DataAdded){
            strToReturn = strProjectName +' is added to database';

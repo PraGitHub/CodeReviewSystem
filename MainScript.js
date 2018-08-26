@@ -25,7 +25,7 @@ app.get('/register',function(httpReq,httpRes){
 app.post('/project/add',function(httpReq,httpRes){
     var bIsSuperuser = helper.IsSuperuser(httpReq.body.username,httpReq.body.password);
     if(bIsSuperuser){
-        var strMessage = helper.InsertProject(httpReq.body.projectname);
+        var strMessage = helper.InsertProject(httpReq.body.projectname,httpReq.body.username);
         httpRes.write(helper.GetHTMLResponse({'message':strMessage,'alert':'success'}));
         httpRes.end();
     }
