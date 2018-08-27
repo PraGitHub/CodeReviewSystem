@@ -36,6 +36,7 @@ var fpAddProjectDropDown = function AddProjectDropDown(strHTMLPath){
             var jsonProject = arrayjsonProject[i];
             console.log('AddProjectDropDown :: jsonProject = ',jsonProject);
             strProjectDropDown += '<p>'+jsonProject.title+'</p>';
+            //Form a proper dropdown
         }
    }
     var strToReturn = strPreProjectDropDown+strProjectDropDown+strPostProjectDropDown;
