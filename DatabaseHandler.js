@@ -48,14 +48,15 @@ var fpQuery = function Query(strCollectionName,JSONQuery,iLimit = 1){
     var jsonReturn = {};
     jsonReturn['iResult'] = undefined;
     jsonReturn['arrayjsonResult'] = undefined;
-    console.log('Query :: ',iLimit);
+    //console.log('Query :: ',JSONQuery,iLimit);
     dbCollection.find(JSONQuery).limit(iLimit).toArray(function(err,result){
         if(err){
             jsonReturn.iResult = defines.dbDefines.Code.Error;
         }
         else{
             jsonReturn.arrayjsonResult = result;
-            if(result != null || result != undefined){
+            //console.log('Query :: result = ',result);
+            if(result.length > 0){
                 jsonReturn.iResult = defines.dbDefines.Code.DataFound;
             }
             else{
