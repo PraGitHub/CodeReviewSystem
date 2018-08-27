@@ -28,6 +28,16 @@ var fpAddProjectDropDown = function AddProjectDropDown(strHTMLPath){
         Obtain Project list from database.
         Compose the HTML
     */
+   var jsonResponse = dbHandler.Query(defines.dbDefines.Collection.projects,{},0);
+   console.log('AddProjectDropDown :: jsonResponse = ',jsonResponse);
+   if(jsonResponse.iResult == defines.dbDefines.Code.DataFound){
+        arrayjsonProject = jsonResponse.arrayjsonResult;
+        for(let i in arrayjsonProject){
+            var jsonProject = arrayjsonProject[i];
+            console.log('AddProjectDropDown :: jsonProject = ',jsonProject);
+            strProjectDropDown += '<p>'+jsonProject.title+'</p>';
+        }
+   }
     var strToReturn = strPreProjectDropDown+strProjectDropDown+strPostProjectDropDown;
     return strToReturn;
 }

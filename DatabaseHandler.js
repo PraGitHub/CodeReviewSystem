@@ -19,7 +19,7 @@ mongoClient.connect(dbURL, {useNewUrlParser:true},function (err, db) {
     //console.log('JSONCollection :: ',JSONCollection);
 });
 
-var fpInsert = function Insert(strCollectionName,JSONData,iLimit=1){
+var fpInsert = function Insert(strCollectionName,JSONData){
     var dbCollection = JSONCollection[strCollectionName];
     var jsonReturn = {};
     jsonReturn['iResult'] = undefined;
@@ -47,13 +47,14 @@ var fpQuery = function Query(strCollectionName,JSONQuery,iLimit = 1){
     var dbCollection = JSONCollection[strCollectionName];
     var jsonReturn = {};
     jsonReturn['iResult'] = undefined;
-    jsonReturn['jsonResponse'] = undefined;
-    dbCollection.find(JSONQuery).limit(iLimit).next(function(err,result){
+    jsonReturn['arrayjsonResult'] = undefined;
+    console.log('Query :: ',iLimit);
+    dbCollection.find(JSONQuery).limit(iLimit).toArray(function(err,result){
         if(err){
             jsonReturn.iResult = defines.dbDefines.Code.Error;
         }
         else{
-            jsonReturn.jsonResponse = result;
+            jsonReturn.arrayjsonResult = result;
             if(result != null || result != undefined){
                 jsonReturn.iResult = defines.dbDefines.Code.DataFound;
             }
@@ -62,17 +63,20 @@ var fpQuery = function Query(strCollectionName,JSONQuery,iLimit = 1){
             }
         }
     });
-    while(jsonReturn.iResult === undefined || jsonReturn.jsonResponse === undefined) deasync.sleep(1);
+    while(jsonReturn.iResult === undefined || jsonReturn.arrayjsonResult === undefined) deasync.sleep(1);
     //console.log(jsonReturn);
     return jsonReturn;
 }
 
+
+//deasync.sleep(5000);
 /*
-deasync.sleep(5000);
-ret = fpInsert(JSONCollection['Projects'],{title:'ProjectHou'});
+ret = fpInsert('Projects',{title:'ProjectHou'});
 console.log("insert returned :",ret);
-ret = fpQuery(JSONCollection['Projects'],{title:'ProjectHoun'});
+ret = fpQuery('Projects',{title:'ProjectHoun'});
 console.log('query returned :',ret);
+ret = fpQuery('Projects',{},0);
+console.log('query returned : ',ret);
 */
 
 module.exports.Insert = fpInsert;
