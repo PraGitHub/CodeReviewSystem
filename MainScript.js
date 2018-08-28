@@ -9,7 +9,7 @@ app.use(bodyParser.urlencoded({extended:true}));
 
 app.listen(httpPort,function(err,res){
     if(err) throw err;
-    console.log('CodeReviewServer started....');
+    console.log('CodeReviewServer started @ '+httpPort+'....');
 });
 
 app.get('/',function(httpReq,httpRes){
@@ -32,5 +32,28 @@ app.post('/project/add',function(httpReq,httpRes){
     else{
         httpRes.write(helper.GetHTMLResponse({'message':'You are not a superuser','alert':'danger'}));
         httpRes.end();
+    }
+});
+
+app.post('/project/delete',function(httpReq,httpRes){
+    console.log('/project/delete :: ',httpReq.body.projectname);
+    if(httpReq.body.projectname ==  '#NOTHING#'){
+        httpRes.write(helper.GetHTMLResponse({'message':'No project has been selected to delete','alert':'info'}));
+        httpRes.end();
+    }
+    else{
+        var bIsSuperuser = helper.IsSuperuser(httpReq.body.username,httpReq.body.password);
+        if(bIsSuperuser){
+            /*
+            Delete a project from database
+            Need to implement delete function in Databasehandler.js
+            */
+           httpRes.write(helper.GetHTMLResponse({'message':'Did not delete. But will definitely delete once the corresponding function is implemeted','alert':'info'}));
+           httpRes.end();
+        }
+        else{
+            httpRes.write(helper.GetHTMLResponse({'message':'You are not a super user to delete a project','alert':'danger'}));
+            httpRes.end();
+        }
     }
 });

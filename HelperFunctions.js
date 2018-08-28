@@ -22,7 +22,8 @@ var fpAddProjectDropDown = function AddProjectDropDown(strHTMLPath){
     var iPos = strHTML.indexOf(strKeyWord);
     var strPreProjectDropDown = strHTML.substr(0,iPos+strKeyWord.length);
     var strPostProjectDropDown = strHTML.substr(iPos+strKeyWord.length);
-    var strProjectDropDown = "";
+    var strProjectDropDown = '<select class="form-control" name="projectname">';
+    strProjectDropDown += '<option value="#NOTHING#">None</option>'
     /*
     Fill strProjectDropDown with proper html format with project list
         Obtain Project list from database.
@@ -34,11 +35,12 @@ var fpAddProjectDropDown = function AddProjectDropDown(strHTMLPath){
         arrayjsonProject = jsonResponse.arrayjsonResult;
         for(let i in arrayjsonProject){
             var jsonProject = arrayjsonProject[i];
-            console.log('AddProjectDropDown :: jsonProject = ',jsonProject);
-            strProjectDropDown += '<p>'+jsonProject.title+'</p>';
+            //console.log('AddProjectDropDown :: jsonProject = ',jsonProject);
+            strProjectDropDown += '<option "'+jsonProject.title+'">'+jsonProject.title+'</option>';
             //Form a proper dropdown
         }
    }
+   strProjectDropDown += '</select>';
     var strToReturn = strPreProjectDropDown+strProjectDropDown+strPostProjectDropDown;
     return strToReturn;
 }
