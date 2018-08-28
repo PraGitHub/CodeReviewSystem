@@ -47,6 +47,8 @@ app.post('/project/delete',function(httpReq,httpRes){
             /*
             Delete a project from database
             Need to implement delete function in Databasehandler.js
+            Implement DeleteProject(projectname) in HelperFunctions.js
+                it should return a message
             */
            httpRes.write(helper.GetHTMLResponse({'message':'Did not delete. But will definitely delete once the corresponding function is implemeted','alert':'info'}));
            httpRes.end();
