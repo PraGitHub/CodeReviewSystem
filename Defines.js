@@ -4,7 +4,9 @@ dbDefines = {
         DataNotFound:2,
         DataFound:3,
         DataAdded:4,
-        DataNotAdded:5
+        DataNotAdded:5,
+        DataDeleted:6,
+        DataNotDeleted:7
     },
     Collection:{
         projects:'Projects',
