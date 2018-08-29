@@ -117,9 +117,9 @@
             </div>
         </div>
         <div class="tab-pane container fade" id="Projects">
-            </br>
+            <br>
             <a href="#AddProject" data-toggle="collapse" class="btn btn-success col-8">Add Project</a>
-            </br>
+            <br>
             <div id="AddProject" class="collapse hide">
                 <br>
                 <form method="post" action="/project/add">
@@ -140,12 +140,12 @@
                     </div>
                 </form>
             </div>
-            </br>
+            <br>
             <a href="#DeleteProject" data-toggle="collapse" class="btn btn-danger col-8" >Delete Project</a>
-            </br>
+            <br>
             <div id="DeleteProject" class="collapse hide">
                 <br>
-                <form method="post" action="/project/delete">
+                <form method="post" id="deleteprojectform" onsubmit="return OnDeleteProject()" action="/project/delete">
                     <div class="form-group">
                         <label class="form-group">Username : </label>
                         <input class="form-control" type="text" name="username" required/>
@@ -169,6 +169,15 @@
     <script type="text/javascript">
         function OnRegister(){
             location.href = "/register";
+        }
+        function OnDeleteProject(){
+            if(document.getElementById("deleteprojectform").projectname.value == "#NOTHING#"){
+                alert("Please select a project");
+                return false;
+            }
+            else{
+                return true;
+            }
         }
     </script>
     </body>
