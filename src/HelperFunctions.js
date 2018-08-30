@@ -18,6 +18,40 @@ var fpGetHttpPort = function GetHttpPort(){
     return strPort;
 }
 
+var fpGetHTMLResponse = function GetHTMLResponse(JSONInputs = {
+    'message':'This function is called without any message',
+    'alert':'primary'
+}){
+    /*
+    Compose a html message based on the alert type. Return the string containing that message
+    */
+   var strToReturn = '';
+   strToReturn = fs.readFileSync(jsonPaths.html+'/Result.html').toString();
+   strToReturn += '<br>';
+   strToReturn += '<div class="container-fluid">';
+   strToReturn += '<div class="row">';
+   strToReturn += '<div class="col-7">';
+   strToReturn += '<div class="alert alert-'+JSONInputs.alert+'">';
+   strToReturn += '<strong><pre>';
+   strToReturn += JSONInputs.message;
+   strToReturn += '</pre></strong>';
+   strToReturn += '</div>';
+   strToReturn += '</div>';
+   strToReturn += '<div class="col-2">';
+   strToReturn += '</div>';
+   strToReturn += '<div class="col-3">';
+   strToReturn += '<ul class="nav nav-pills bg-dark flex-column">';
+   strToReturn += '<li class="nav-item border-bottom">';
+   strToReturn += '<a class="nav-pills nav-link text-white" href="/">Home</a>';
+   strToReturn += '</li>';
+   strToReturn += '</ul>';
+   strToReturn += '</div>';
+   strToReturn += '</div>';
+   strToReturn += '</div>';
+   strToReturn += '<br>';
+   return strToReturn;
+}
+
 var fpAddProjectDropDown = function AddProjectDropDown(strHTMLPath){
     var strHTML = fs.readFileSync(strHTMLPath).toString();
     var strKeyWord = '<!--PROJECTDROPDOWN-->';
@@ -66,74 +100,60 @@ var fpIsSuperuser = function IsSuperuser(strUsername,strPassword){
 }
 
 var fpInsertProject = function InsertProject(strProjectName,strUserName){
-    /*
-    If exists return a message - Project name exists
-    Else Insert and return a message - Successfully added. 
-        In case of any error then return that error message
-    */
-   //modify this in such a way that it should return html response
    var jsonData = {title:strProjectName.toUpperCase()};
-   var strToReturn = '';
+   var strHtmlResponse = '';
+   var jsonResponse = {};
+   jsonResponse['message'] = '';
+   jsonResponse['alert'] = '';
+
    jsonResponse = dbHandler.Query(defines.dbDefines.Collection.projects,jsonData);
    if(jsonResponse.iResult == defines.dbDefines.Code.DataNotFound){
        jsonData['addedby'] = strUserName.toUpperCase();
        jsonResponse = dbHandler.Insert(defines.dbDefines.Collection.projects,jsonData);
        if(jsonResponse.iResult == defines.dbDefines.Code.DataAdded){
-           strToReturn = strProjectName +' is added to database';
+           jsonResponse.message = strProjectName +' is added to database';
+           jsonResponse.alert = 'success';
        }
        else{
            console.log('InsertProject :: Data cannot be added',jsonResponse);
-           strToReturn = 'Failure in adding '+strProjectName+' to database';
+           jsonResponse.message = 'Failure in adding '+strProjectName+' to database';
+           jsonResponse.alert = 'danger';
        }
    }
    else{
-       strToReturn = strProjectName + ' already exists in database';
+    jsonResponse.message = strProjectName + ' already exists in database';
+    jsonResponse.alert = 'info';
    }
-   return strToReturn;
+   strHtmlResponse = fpGetHTMLResponse(jsonResponse);
+   return strHtmlResponse;
 }
 
 var fpDeleteProject = function DeleteProject(strProjectName){
     var jsonData = {title:strProjectName.toUpperCase()};
-    var strToReturn = '';
+    var strHtmlResponse = '';
+    var jsonResponse = {};
+    jsonResponse['message'] = '';
+    jsonResponse['alert'] = '';
     jsonResponse = dbHandler.Delete(defines.dbDefines.Collection.projects,jsonData);
     if(jsonResponse.iResult == defines.dbDefines.Code.Error){
-        strToReturn = 'Error ';
-        //modify this function in such a way that it should return html response
+        jsonResponse.message = 'Error in deleting the project, '+strProjectName;
+        jsonResponse.alert = 'danger';
     }
-}
-
-var fpGetHTMLResponse = function GetHTMLResponse(JSONInputs = {
-    'message':'This function is called without any message',
-    'alert':'primary'
-}){
-    /*
-    Compose a html message based on the alert type. Return the string containing that message
-    */
-   var strToReturn = '';
-   strToReturn = fs.readFileSync(jsonPaths.html+'/Result.html').toString();
-   strToReturn += '<br>';
-   strToReturn += '<div class="container-fluid">';
-   strToReturn += '<div class="row">';
-   strToReturn += '<div class="col-7">';
-   strToReturn += '<div class="alert alert-'+JSONInputs.alert+'">';
-   strToReturn += '<strong><pre>';
-   strToReturn += JSONInputs.message;
-   strToReturn += '</pre></strong>';
-   strToReturn += '</div>';
-   strToReturn += '</div>';
-   strToReturn += '<div class="col-2">';
-   strToReturn += '</div>';
-   strToReturn += '<div class="col-3">';
-   strToReturn += '<ul class="nav nav-pills bg-dark flex-column">';
-   strToReturn += '<li class="nav-item border-bottom">';
-   strToReturn += '<a class="nav-pills nav-link text-white" href="/">Home</a>';
-   strToReturn += '</li>';
-   strToReturn += '</ul>';
-   strToReturn += '</div>';
-   strToReturn += '</div>';
-   strToReturn += '</div>';
-   strToReturn += '<br>';
-   return strToReturn;
+    else if(jsonResponse.iResult == defines.dbDefines.Code.DataNotDeleted){
+        jsonResponse.message = 'Project, '+strProjectName+' does not exist in database to delete';
+        jsonResponse.alert = 'info';
+    }
+    else if(jsonResponse.iResult == defines.dbDefines.Code.DataDeleted){
+        jsonResponse.message = 'Project, '+strProjectName+' has been deleted from the database';
+        jsonResponse.alert = 'success';
+    }
+    else{
+        //control will never come here. just in case if it does following will be the result
+        jsonResponse.message = 'Delete operation failed due to unknown reason';
+        jsonResponse.alert = 'primary';
+    }
+    strHtmlResponse = fpGetHTMLResponse(jsonResponse);
+    return strHtmlResponse;
 }
 
 function FilljsonPaths(){

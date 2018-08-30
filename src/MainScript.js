@@ -26,8 +26,8 @@ app.post('/project/add',function(httpReq,httpRes){
     var bIsSuperuser = helper.IsSuperuser(httpReq.body.username,httpReq.body.password);
     if(bIsSuperuser){
         //Modify InsertProject in such a way that it should return html response
-        var strMessage = helper.InsertProject(httpReq.body.projectname,httpReq.body.username);
-        httpRes.write(helper.GetHTMLResponse({'message':strMessage,'alert':'success'}));
+        var strHtmlResponse = helper.InsertProject(httpReq.body.projectname,httpReq.body.username);
+        httpRes.write(strHtmlResponse);
         httpRes.end();
     }
     else{
@@ -45,13 +45,8 @@ app.post('/project/delete',function(httpReq,httpRes){
     else{
         var bIsSuperuser = helper.IsSuperuser(httpReq.body.username,httpReq.body.password);
         if(bIsSuperuser){
-            /*
-            Delete a project from database
-            Need to implement delete function in Databasehandler.js
-            Implement DeleteProject(projectname) in HelperFunctions.js
-                it should return a message
-            */
-           httpRes.write(helper.GetHTMLResponse({'message':'Did not delete. But will definitely delete once the corresponding function is implemeted','alert':'info'}));
+           var strHtmlResponse = helper.DeleteProject(httpReq.body.projectname)
+           httpRes.write(strHtmlResponse);
            httpRes.end();
         }
         else{
