@@ -2,6 +2,7 @@ var dbHandler = require(__dirname+'/DatabaseHandler.js');
 var defines = require(__dirname+'/Defines.js');
 var fs = require('fs');
 var jsonPaths = {};
+var listKeysOfjsonPaths = ['src','html'];
 
 var fpGetHttpPort = function GetHttpPort(){
     var strPort = "";
@@ -15,18 +16,6 @@ var fpGetHttpPort = function GetHttpPort(){
         strPort = 8085;
     }
     return strPort;
-}
-
-var fpGetHTMLDirectory = function GetHTMLDirectory(){
-    var strPath = __dirname;
-    var strReturnPath = '';
-    var iIndex = strPath.indexOf('/src');
-    if(iIndex < 0){
-        iIndex = strPath.indexOf('\\src');
-    }
-    strReturnPath = strPath.substr(0,iIndex);
-    strReturnPath += '/html';
-    return strReturnPath;
 }
 
 var fpAddProjectDropDown = function AddProjectDropDown(strHTMLPath){
@@ -136,7 +125,23 @@ var fpGetHTMLResponse = function GetHTMLResponse(JSONInputs = {
    return strToReturn;
 }
 
-jsonPaths['html'] = fpGetHTMLDirectory();
+function FilljsonPaths(){
+    var strParent = __dirname;
+    var iIndex = strParent.indexOf('/src');
+    if(iIndex < 0){
+        iIndex = strParent.indexOf('\\src');
+    }
+    strParent = strParent.substr(0,iIndex);//this will contain parent or root directory
+    jsonPaths['root'] = strParent;
+    jsonPaths['parent'] = strParent;
+    for(let i in listKeysOfjsonPaths){
+        strKey = listKeysOfjsonPaths[i];
+        jsonPaths[strKey] = strParent+'/'+strKey;
+    }
+}
+
+FilljsonPaths();
+//console.log(jsonPaths);
 
 module.exports.GetHttpPort = fpGetHttpPort;
 module.exports.AddProjectDropDown = fpAddProjectDropDown;
