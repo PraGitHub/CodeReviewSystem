@@ -71,6 +71,7 @@ var fpInsertProject = function InsertProject(strProjectName,strUserName){
     Else Insert and return a message - Successfully added. 
         In case of any error then return that error message
     */
+   //modify this in such a way that it should return html response
    var jsonData = {title:strProjectName.toUpperCase()};
    var strToReturn = '';
    jsonResponse = dbHandler.Query(defines.dbDefines.Collection.projects,jsonData);
@@ -89,6 +90,16 @@ var fpInsertProject = function InsertProject(strProjectName,strUserName){
        strToReturn = strProjectName + ' already exists in database';
    }
    return strToReturn;
+}
+
+var fpDeleteProject = function DeleteProject(strProjectName){
+    var jsonData = {title:strProjectName.toUpperCase()};
+    var strToReturn = '';
+    jsonResponse = dbHandler.Delete(defines.dbDefines.Collection.projects,jsonData);
+    if(jsonResponse.iResult == defines.dbDefines.Code.Error){
+        strToReturn = 'Error ';
+        //modify this function in such a way that it should return html response
+    }
 }
 
 var fpGetHTMLResponse = function GetHTMLResponse(JSONInputs = {
@@ -147,6 +158,7 @@ module.exports.GetHttpPort = fpGetHttpPort;
 module.exports.AddProjectDropDown = fpAddProjectDropDown;
 module.exports.IsSuperuser = fpIsSuperuser;
 module.exports.InsertProject = fpInsertProject;
+module.exports.DeleteProject = fpDeleteProject;
 module.exports.GetHTMLResponse = fpGetHTMLResponse;
 module.exports.InsertProject = fpInsertProject;
 module.exports.IsSuperuser = fpIsSuperuser;
