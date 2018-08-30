@@ -29,9 +29,9 @@ Gerrit - https://www.youtube.com/watch?v=a0xMde2GI00
  
  Copy these files to any folder of your choice.
  
- Run the command - "npm install"
+ Run the command - "npm install" from parent directory
  
- Run the command - "node MainScript.js -port=PortNumber"
+ Run the command - "node MainScript.js -port=PortNumber" from 'parent/src' directory
         PortNumber - Can be any unused port @ that time.
         If you do not specify any port number(i.e. if the command is - "mode MainScript.js" then, by default the port number will be 8085.
 
