@@ -34,6 +34,6 @@ Gerrit - https://www.youtube.com/watch?v=a0xMde2GI00
  
  Run the command - "node MainScript.js -port=PortNumber" from 'parent/src' directory
         PortNumber - Can be any unused port @ that time.
-        If you do not specify any port number(i.e. if the command is - "mode MainScript.js" then, by default the port number will be 8085.
+        If you do not specify any port number(i.e. if the command is - "mode MainScript.js" then, by default the port number will be 8085. 
 
  ------------------------------------------------------------------------------------------------------------------------
