@@ -1,6 +1,7 @@
 var dbHandler = require(__dirname+'/DatabaseHandler.js');
 var defines = require(__dirname+'/Defines.js');
 var fs = require('fs');
+var jsonPaths = {};
 
 var fpGetHttpPort = function GetHttpPort(){
     var strPort = "";
@@ -14,6 +15,18 @@ var fpGetHttpPort = function GetHttpPort(){
         strPort = 8085;
     }
     return strPort;
+}
+
+var fpGetHTMLDirectory = function GetHTMLDirectory(){
+    var strPath = __dirname;
+    var strReturnPath = '';
+    var iIndex = strPath.indexOf('/src');
+    if(iIndex < 0){
+        iIndex = strPath.indexOf('\\src');
+    }
+    strReturnPath = strPath.substr(0,iIndex);
+    strReturnPath += '/html';
+    return strReturnPath;
 }
 
 var fpAddProjectDropDown = function AddProjectDropDown(strHTMLPath){
@@ -97,7 +110,7 @@ var fpGetHTMLResponse = function GetHTMLResponse(JSONInputs = {
     Compose a html message based on the alert type. Return the string containing that message
     */
    var strToReturn = '';
-   strToReturn = fs.readFileSync(__dirname+'/Result.html').toString();
+   strToReturn = fs.readFileSync(jsonPaths.html+'/Result.html').toString();
    strToReturn += '<br>';
    strToReturn += '<div class="container-fluid">';
    strToReturn += '<div class="row">';
@@ -123,6 +136,8 @@ var fpGetHTMLResponse = function GetHTMLResponse(JSONInputs = {
    return strToReturn;
 }
 
+jsonPaths['html'] = fpGetHTMLDirectory();
+
 module.exports.GetHttpPort = fpGetHttpPort;
 module.exports.AddProjectDropDown = fpAddProjectDropDown;
 module.exports.IsSuperuser = fpIsSuperuser;
@@ -130,3 +145,4 @@ module.exports.InsertProject = fpInsertProject;
 module.exports.GetHTMLResponse = fpGetHTMLResponse;
 module.exports.InsertProject = fpInsertProject;
 module.exports.IsSuperuser = fpIsSuperuser;
+module.exports.jsonPaths = jsonPaths;
