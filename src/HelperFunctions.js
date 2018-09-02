@@ -21,13 +21,15 @@ var fpGetHttpPort = function GetHttpPort(){
 var fpGetHTMLResponse = function GetHTMLResponse(JSONInputs = {
     'message':'This function is called without any message',
     'alert':'primary'
-}){
+},bIncludeHeader = true){
     /*
     Compose a html message based on the alert type. Return the string containing that message
     */
    var strToReturn = '';
-   strToReturn = fs.readFileSync(jsonPaths.html+'/Result.html').toString();
-   strToReturn += '<br>';
+   if(bIncludeHeader == true){
+    strToReturn = fs.readFileSync(jsonPaths.html+'/Result.html').toString();
+    strToReturn += '<br>';
+   }
    strToReturn += '<div class="container-fluid">';
    strToReturn += '<div class="row">';
    strToReturn += '<div class="col-7">';
@@ -40,11 +42,13 @@ var fpGetHTMLResponse = function GetHTMLResponse(JSONInputs = {
    strToReturn += '<div class="col-2">';
    strToReturn += '</div>';
    strToReturn += '<div class="col-3">';
-   strToReturn += '<ul class="nav nav-pills bg-dark flex-column">';
-   strToReturn += '<li class="nav-item border-bottom">';
-   strToReturn += '<a class="nav-pills nav-link text-white" href="/">Home</a>';
-   strToReturn += '</li>';
-   strToReturn += '</ul>';
+   if(bIncludeHeader == true){
+    strToReturn += '<ul class="nav nav-pills bg-dark flex-column">';
+    strToReturn += '<li class="nav-item border-bottom">';
+    strToReturn += '<a class="nav-pills nav-link text-white" href="/">Home</a>';
+    strToReturn += '</li>';
+    strToReturn += '</ul>';
+   }
    strToReturn += '</div>';
    strToReturn += '</div>';
    strToReturn += '</div>';
@@ -58,7 +62,7 @@ var fpAddProjectDropDown = function AddProjectDropDown(strHTMLPath){
     var iPos = strHTML.indexOf(strKeyWord);
     var strPreProjectDropDown = strHTML.substr(0,iPos+strKeyWord.length);
     var strPostProjectDropDown = strHTML.substr(iPos+strKeyWord.length);
-    var strProjectDropDown = '<select class="form-control" name="projectname">';
+    var strProjectDropDown = '<select class="selectpicker" multiple data-live-search="true" name="projectname">';
     strProjectDropDown += '<option value="#NOTHING#">None</option>'
     /*
     Fill strProjectDropDown with proper html format with project list
@@ -77,7 +81,7 @@ var fpAddProjectDropDown = function AddProjectDropDown(strHTMLPath){
         }
    }
    strProjectDropDown += '</select>';
-    var strToReturn = strPreProjectDropDown+strProjectDropDown+strPostProjectDropDown;
+    var strToReturn = strPreProjectDropDown+'<br>'+strProjectDropDown+'<br>'+strPostProjectDropDown;
     return strToReturn;
 }
 
@@ -128,31 +132,39 @@ var fpInsertProject = function InsertProject(strProjectName,strUserName){
    return strHtmlResponse;
 }
 
-var fpDeleteProject = function DeleteProject(strProjectName){
-    var jsonData = {title:strProjectName.toUpperCase()};
+var fpDeleteProject = function DeleteProject(arrayProjectName){
     var strHtmlResponse = '';
-    var jsonResponse = {};
-    jsonResponse['message'] = '';
-    jsonResponse['alert'] = '';
-    jsonResponse = dbHandler.Delete(defines.dbDefines.Collection.projects,jsonData);
-    if(jsonResponse.iResult == defines.dbDefines.Code.Error){
-        jsonResponse.message = 'Error in deleting the project, '+strProjectName;
-        jsonResponse.alert = 'danger';
+    var bSeekHeader = true;
+    for(let i in arrayProjectName){
+        var strProjectName = arrayProjectName[i];
+        var jsonData = {title:strProjectName.toUpperCase()};
+        var jsonResponse = {};
+        jsonResponse['message'] = '';
+        jsonResponse['alert'] = '';
+        jsonResponse = dbHandler.Delete(defines.dbDefines.Collection.projects,jsonData);
+        if(jsonResponse.iResult == defines.dbDefines.Code.Error){
+            jsonResponse.message = 'Error in deleting the project, '+strProjectName;
+            jsonResponse.alert = 'danger';
+        }
+        else if(jsonResponse.iResult == defines.dbDefines.Code.DataNotDeleted){
+            jsonResponse.message = 'Project, "'+strProjectName+'" does not exist in database to delete';
+            jsonResponse.alert = 'info';
+        }
+        else if(jsonResponse.iResult == defines.dbDefines.Code.DataDeleted){
+            jsonResponse.message = 'Project, "'+strProjectName+'" has been deleted from the database';
+            jsonResponse.alert = 'success';
+        }
+        else{
+            //control will never come here. just in case if it does following will be the result
+            jsonResponse.message = 'Delete operation failed due to unknown reason';
+            jsonResponse.alert = 'primary';
+        }
+        if(i>0){
+            bSeekHeader = false;
+        }
+        strHtmlResponse += fpGetHTMLResponse(jsonResponse,bSeekHeader);
+        strHtmlResponse += '<br>';
     }
-    else if(jsonResponse.iResult == defines.dbDefines.Code.DataNotDeleted){
-        jsonResponse.message = 'Project, '+strProjectName+' does not exist in database to delete';
-        jsonResponse.alert = 'info';
-    }
-    else if(jsonResponse.iResult == defines.dbDefines.Code.DataDeleted){
-        jsonResponse.message = 'Project, '+strProjectName+' has been deleted from the database';
-        jsonResponse.alert = 'success';
-    }
-    else{
-        //control will never come here. just in case if it does following will be the result
-        jsonResponse.message = 'Delete operation failed due to unknown reason';
-        jsonResponse.alert = 'primary';
-    }
-    strHtmlResponse = fpGetHTMLResponse(jsonResponse);
     return strHtmlResponse;
 }
 

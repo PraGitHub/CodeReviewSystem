@@ -19,7 +19,9 @@ app.get('/',function(httpReq,httpRes){
 });
 
 app.get('/register',function(httpReq,httpRes){
-    httpRes.sendFile(helper.jsonPaths.html+'/Register.html');
+    var strHTMLToSend = helper.AddProjectDropDown(helper.jsonPaths.html+'/Register.html');
+    httpRes.write(strHTMLToSend);
+    httpRes.end();
 });
 
 app.post('/project/add',function(httpReq,httpRes){
