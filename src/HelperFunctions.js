@@ -62,7 +62,7 @@ var fpAddProjectDropDown = function AddProjectDropDown(strHTMLPath){
     var iPos = strHTML.indexOf(strKeyWord);
     var strPreProjectDropDown = strHTML.substr(0,iPos+strKeyWord.length);
     var strPostProjectDropDown = strHTML.substr(iPos+strKeyWord.length);
-    var strProjectDropDown = '<select class="selectpicker" multiple data-live-search="true" name="projectname">';
+    var strProjectDropDown = '<select class="selectpicker form-control" multiple data-live-search="true" name="projectname">';
     strProjectDropDown += '<option value="#NOTHING#">None</option>'
     /*
     Fill strProjectDropDown with proper html format with project list
