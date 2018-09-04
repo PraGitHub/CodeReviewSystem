@@ -57,3 +57,9 @@ app.post('/project/delete',function(httpReq,httpRes){
         }
     }
 });
+
+app.post('/registeruser',function(httpReq,httpRes){
+    console.log(httpReq.body);
+    var jsonUserProfile = {};
+    //Implement this...
+});

@@ -100,8 +100,8 @@
     
         <script type="text/javascript">
             function ValidatePassword(){
-                var strPassword = document.getElementById("Password");
-                var strConfirmPassword = document.getElementById("ConfirmPassword");
+                var strPassword = document.getElementById("Password").Password.value;
+                var strConfirmPassword = document.getElementById("ConfirmPassword").ConfirmPassword.value;
                 if(strPassword!=strConfirmPassword){
                     alert("Password mismatch!");
                     return false;
