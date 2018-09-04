@@ -93,6 +93,18 @@ var fpDelete = function Delete(strCollectionName,jsonData){
     return jsonReturn;
 }
 
+var fpUpdate = function Update(strCollectionName,jsonQuery,jsonData){
+    var dbCollection = jsonCollection[strCollectionName];
+    var jsonReturn = {};
+    jsonReturn['iResult'] = undefined;
+    jsonReturn['jsonResponse'] = undefined;
+    dbCollection.updateOne(jsonQuery,{$set:jsonData},function(err,result){
+        //Need to complete this
+    });
+    while(jsonReturn.iResult === undefined || jsonReturn.jsonResponse === undefined) deasync.sleep(1);
+    return jsonReturn;
+}
+
 
 deasync.sleep(5000);
 /*
@@ -109,3 +121,4 @@ console.log('ret = ',ret);
 module.exports.Insert = fpInsert;
 module.exports.Query = fpQuery;
 module.exports.Delete = fpDelete;
+module.exports.Update = fpUpdate;
