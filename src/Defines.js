@@ -16,4 +16,11 @@ dbDefines = {
     }
 }
 
+userDefines = {
+    //Need to think about this
+    Keys:{
+        username:'username'
+    }
+}
+
 module.exports.dbDefines = dbDefines;
