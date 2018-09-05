@@ -146,7 +146,7 @@ var fpDeleteProject = function DeleteProject(arrayProjectName){
             jsonResponse.message = 'Error in deleting the project, '+strProjectName;
             jsonResponse.alert = 'danger';
         }
-        else if(jsonResponse.iResult == defines.dbDefines.Code.DataNotDeleted){
+        else if(jsonResponse.iResult == defines.dbDefines.Code.DataNotFound){
             jsonResponse.message = 'Project, "'+strProjectName+'" does not exist in database to delete';
             jsonResponse.alert = 'info';
         }

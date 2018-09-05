@@ -6,7 +6,8 @@ dbDefines = {
         DataAdded:4,
         DataNotAdded:5,
         DataDeleted:6,
-        DataNotDeleted:7
+        DataUpdated:7,
+        DataUpdateNotRequired:8
     },
     Collection:{
         projects:'Projects',

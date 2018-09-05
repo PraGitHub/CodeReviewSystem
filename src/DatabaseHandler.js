@@ -82,7 +82,7 @@ var fpDelete = function Delete(strCollectionName,jsonData){
         else{
             //console.log('Delete :: callback result = ',result);
             if(result.deletedCount == 0){
-                jsonReturn.iResult = defines.dbDefines.Code.DataNotDeleted;
+                jsonReturn.iResult = defines.dbDefines.Code.DataNotFound;
             }
             else{
                 jsonReturn.iResult = defines.dbDefines.Code.DataDeleted;
@@ -100,6 +100,23 @@ var fpUpdate = function Update(strCollectionName,jsonQuery,jsonData){
     jsonReturn['jsonResponse'] = undefined;
     dbCollection.updateOne(jsonQuery,{$set:jsonData},function(err,result){
         //Need to complete this
+        jsonReturn.jsonResponse = result.result;
+        if(err){
+            jsonReturn.iResult = defines.dbDefines.Code.Error;
+        }
+        else{
+            if(result.result.n>0){
+                if(result.result.nModified>0){
+                    jsonReturn.iResult = defines.dbDefines.Code.DataUpdated;
+                }
+                else{
+                    jsonReturn.iResult = defines.dbDefines.Code.DataUpdateNotRequired;
+                }
+            }
+            else{
+                jsonReturn.iResult = defines.dbDefines.Code.DataNotFound;
+            }
+        }
     });
     while(jsonReturn.iResult === undefined || jsonReturn.jsonResponse === undefined) deasync.sleep(1);
     return jsonReturn;
@@ -115,6 +132,8 @@ console.log('query returned :',ret);
 ret = fpQuery('Projects',{},0);
 console.log('query returned : ',ret);
 ret = fpDelete(defines.dbDefines.Collection.projects,{title:'nothing'});
+console.log('ret = ',ret);
+ret = fpUpdate(defines.dbDefines.Collection.superusers,{username:('prashanh').toUpperCase()},{password:'password123',mailid:'prashanthhn2509@.com',projects:['project1','project23']});
 console.log('ret = ',ret);
 */
 
