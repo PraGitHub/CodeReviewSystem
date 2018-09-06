@@ -3,19 +3,20 @@ var defines = require(__dirname+'/Defines.js');
 var fs = require('fs');
 var jsonPaths = {};
 var listKeysOfjsonPaths = ['src','html'];
+var strArgs = process.argv.toString();
 
-var fpGetHttpPort = function GetHttpPort(){
-    var strPort = "";
-    for(let i=0;i<process.argv.length;i++){
-        var strArg = process.argv[i];
-        if(strArg.indexOf('-port=')>-1){
-            strPort = strArg.substr(6);
-        }
+var fpGetArgument = function GetArgument(strArgKey){
+    var iLen = strArgKey.length;
+    var iStart;
+    var iEnd;
+    var strArg = undefined;
+    if((iStart = strArgs.indexOf(strArgKey))>-1){
+        strArg = strArgs.substr(iStart+iLen);
     }
-    if(strPort == ""){
-        strPort = 8085;
+    if(strArg != undefined && (iEnd = strArg.indexOf(','))>-1){
+        strArg = strArg.substr(0,iEnd);
     }
-    return strPort;
+    return strArg;
 }
 
 var fpGetHTMLResponse = function GetHTMLResponse(JSONInputs = {
@@ -186,7 +187,7 @@ function FilljsonPaths(){
 FilljsonPaths();
 //console.log(jsonPaths);
 
-module.exports.GetHttpPort = fpGetHttpPort;
+module.exports.GetArgument = fpGetArgument;
 module.exports.AddProjectDropDown = fpAddProjectDropDown;
 module.exports.IsSuperuser = fpIsSuperuser;
 module.exports.InsertProject = fpInsertProject;

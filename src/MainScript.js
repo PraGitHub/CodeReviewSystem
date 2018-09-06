@@ -2,7 +2,14 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 var helper = require(__dirname+'/HelperFunctions.js');
-var httpPort = helper.GetHttpPort();
+var httpPort = helper.GetArgument('-port=');
+var mailPassword = helper.GetArgument('-password=');
+
+if(httpPort == undefined){
+    httpPort = 8085;
+}
+
+console.log(httpPort,mailPassword);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
