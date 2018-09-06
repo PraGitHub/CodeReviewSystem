@@ -28,7 +28,8 @@ userKeys = {
     numrev:'numreviews',
     numreqinprogress:'numreqinprogress',
     numrevinprogress:'numrevinprogress',
-    islocked:'islocked'
+    islocked:'islocked',
+    isverified:'isverified'
 }
 
 module.exports.dbDefines = dbDefines;
