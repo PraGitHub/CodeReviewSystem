@@ -16,11 +16,20 @@ dbDefines = {
     }
 }
 
-userDefines = {
-    //Need to think about this
-    Keys:{
-        username:'username'
-    }
+userKeys = {
+    username:'username',
+    firstname:'firstname',
+    lastname:'lastname',
+    password:'password',
+    key:'key',
+    mailid:'mailid',
+    projects:'projects',
+    numreq:'numrequests',
+    numrev:'numreviews',
+    numreqinprogress:'numreqinprogress',
+    numrevinprogress:'numrevinprogress',
+    islocked:'islocked'
 }
 
 module.exports.dbDefines = dbDefines;
+module.exports.userKeys = userKeys;
