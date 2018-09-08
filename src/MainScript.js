@@ -54,7 +54,14 @@ app.post('/project/delete',function(httpReq,httpRes){
     else{
         var bIsSuperuser = helper.IsSuperuser(httpReq.body.username,httpReq.body.password);
         if(bIsSuperuser){
-           var strHtmlResponse = helper.DeleteProject(httpReq.body.projectname)
+           var arrayProjects;
+           if(typeof(httpReq.body.projectname) == 'string'){
+               arrayProjects = [httpReq.body.projectname];
+           }
+           else{
+               arrayProjects = httpReq.body.projectname;
+           }
+           var strHtmlResponse = helper.DeleteProject(arrayProjects)
            httpRes.write(strHtmlResponse);
            httpRes.end();
         }
