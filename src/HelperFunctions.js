@@ -1,8 +1,6 @@
 var dbHandler = require(__dirname+'/DatabaseHandler.js');
 var defines = require(__dirname+'/Defines.js');
 var fs = require('fs');
-var jsonPaths = {};
-var listKeysOfjsonPaths = ['src','html'];
 var strArgs = process.argv.toString();
 
 var fpGetArgument = function GetArgument(strArgKey){
@@ -28,7 +26,7 @@ var fpGetHTMLResponse = function GetHTMLResponse(JSONInputs = {
     */
    var strToReturn = '';
    if(bIncludeHeader == true){
-    strToReturn = fs.readFileSync(jsonPaths.html+'/Result.html').toString();
+    strToReturn = fs.readFileSync(defines.Paths.html+'/Result.html').toString();
     strToReturn += '<br>';
    }
    strToReturn += '<div class="container-fluid">';
@@ -169,23 +167,6 @@ var fpDeleteProject = function DeleteProject(arrayProjectName){
     return strHtmlResponse;
 }
 
-function FilljsonPaths(){
-    var strParent = __dirname;
-    var iIndex = strParent.indexOf('/src');
-    if(iIndex < 0){
-        iIndex = strParent.indexOf('\\src');
-    }
-    strParent = strParent.substr(0,iIndex);//this will contain parent or root directory
-    jsonPaths['root'] = strParent;
-    jsonPaths['parent'] = strParent;
-    for(let i in listKeysOfjsonPaths){
-        strKey = listKeysOfjsonPaths[i];
-        jsonPaths[strKey] = strParent+'/'+strKey;
-    }
-}
-
-FilljsonPaths();
-//console.log(jsonPaths);
 
 module.exports.GetArgument = fpGetArgument;
 module.exports.AddProjectDropDown = fpAddProjectDropDown;

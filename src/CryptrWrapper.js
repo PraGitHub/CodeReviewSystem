@@ -55,3 +55,7 @@ decryptedData = Decrypt('361c4e67f3e612d45dfe917853b5bdebce74096ff6c3a65f47cfb1f
 console.log('Decrypted = ',JSON.parse(decryptedData));
 */
 
+module.exports.Encrypt = Encrypt;
+module.exports.Decrypt = Decrypt;
+module.exports.GetKey = GetKey;
+
