@@ -11,7 +11,10 @@ var deasync = require('deasync');
 
 var Send = function(strPasswordKey,strMailId,strSubject,strMessage){
     var strPassword = cryptr.Decrypt(strEncryptedPassword,strPasswordKey);
-    var iResult = undefined;
+    var jsonReturn = {}
+    jsonReturn['iResult'] = undefined;
+    jsonReturn['response'] = undefined;
+    console.log('strMessage = ',strMessage);
     let transporter = nodemailer.createTransport({
         service: 'yahoo',
         secure: false,
@@ -33,25 +36,28 @@ var Send = function(strPasswordKey,strMailId,strSubject,strMessage){
     };
     
     transporter.sendMail(helperOptions, function (err, info) {
+        console.log(info);
+        jsonReturn.response = info.response;
         if (err) {
-            iResult = defines.mailDefines.Error;
+            jsonReturn.iResult = defines.mailDefines.Error;
         }
         else {
-            iResult = defines.mailDefines.Successful;
-            console.log(info);
+            jsonReturn.iResult = defines.mailDefines.Successful;
             //Need to return find a way to determine successful/failure
         }
     });
-    while(iResult === undefined)deasync.sleep(1);
-    return iResult;
+    while(jsonReturn.iResult === undefined || jsonReturn.response === undefined)deasync.sleep(1);
+    return jsonReturn;
 }
 
 
 //Testing
-var key;
+var key ;
 var fs = require('fs');
 var message = fs.readFileSync(defines.Paths.html+'/Result.html').toString();
-var result = Send(key,'prashanthhn2509@gmail.com','CodeReviewSystem',message);
+//console.log(message);
+//var result = Send(key,'prashanthhn2509@gmail.com','CodeReviewSystem',message);
+var result = Send(key,'prashanthhn2509@gmail.com','CodeReviewSystem','<html><body><h2>TestMail</h2><p>This is message1</p><p>This is message2</p></body></html>');
 console.log('result = ',result);
 
 
