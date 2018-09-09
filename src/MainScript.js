@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 var helper = require(__dirname+'/HelperFunctions.js');
+var defines = require(__dirname+'/Defines.js')
 var httpPort = helper.GetArgument('-port=');
 var mailPassword = helper.GetArgument('-password=');
 
@@ -20,13 +21,13 @@ app.listen(httpPort,function(err,res){
 });
 
 app.get('/',function(httpReq,httpRes){
-    var strHTMLToSend = helper.AddProjectDropDown(helper.jsonPaths.html+'/Home.html');
+    var strHTMLToSend = helper.AddProjectDropDown(defines.Paths.html+'/Home.html');
     httpRes.write(strHTMLToSend);
     httpRes.end();
 });
 
 app.get('/register',function(httpReq,httpRes){
-    var strHTMLToSend = helper.AddProjectDropDown(helper.jsonPaths.html+'/Register.html');
+    var strHTMLToSend = helper.AddProjectDropDown(defines.Paths.html+'/Register.html');
     httpRes.write(strHTMLToSend);
     httpRes.end();
 });
