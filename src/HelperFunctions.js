@@ -25,8 +25,13 @@ var fpGetHTMLResponse = function GetHTMLResponse(JSONInputs = {
     Compose a html message based on the alert type. Return the string containing that message
     */
    var strToReturn = '';
+   var strKeyWord = '<!--ADDBODY-->';
+   var strEndTags = '';
    if(bIncludeHeader == true){
     strToReturn = fs.readFileSync(defines.Paths.html+'/Result.html').toString();
+    var iIndex = strToReturn.indexOf(strKeyWord);
+    strEndTags = strToReturn.substr(iIndex+strKeyWord.length);
+    strToReturn = strToReturn.substr(0,iIndex+strKeyWord.length);
     strToReturn += '<br>';
    }
    strToReturn += '<div class="container-fluid">';
@@ -52,6 +57,7 @@ var fpGetHTMLResponse = function GetHTMLResponse(JSONInputs = {
    strToReturn += '</div>';
    strToReturn += '</div>';
    strToReturn += '<br>';
+   strToReturn += strEndTags;
    return strToReturn;
 }
 
@@ -176,4 +182,3 @@ module.exports.DeleteProject = fpDeleteProject;
 module.exports.GetHTMLResponse = fpGetHTMLResponse;
 module.exports.InsertProject = fpInsertProject;
 module.exports.IsSuperuser = fpIsSuperuser;
-module.exports.jsonPaths = jsonPaths;
