@@ -80,5 +80,8 @@ app.post('/registeruser',function(httpReq,httpRes){
         //console.log('One Project name is chosen')
         jsonUserProfile.projectname = [jsonUserProfile.projectname];
     }
-    var iReturnCode = helper.ProcessNewUser(jsonUserProfile);
+    var iReturnCode = helper.ProcessNewUser(jsonUserProfile,mailPassword);
+    if(iReturnCode == defines.ProcessNewUserCodes.Success){
+        
+    }
 });

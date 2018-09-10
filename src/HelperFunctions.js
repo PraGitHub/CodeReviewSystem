@@ -196,7 +196,7 @@ var fpIsAnyKeyUndefined = function IsAnyKeyUndefined(jsonIn){
     return bReturn;
 }
 
-var fpProcessNewUser = function ProcessNewUser(jsonProfile){
+var fpProcessNewUser = function ProcessNewUser(jsonProfile,strPasswordKey){
     var jsonProfileToDB = {};
     if(jsonProfile == undefined){
         return defines.processNewUserCodes.InvalidUserData;
@@ -210,23 +210,39 @@ var fpProcessNewUser = function ProcessNewUser(jsonProfile){
     jsonProfileToDB[defines.userKeys.username] = jsonProfile['UserName'];
     jsonProfileToDB[defines.userKeys.firstname] = jsonProfile['FirstName'];
     jsonProfileToDB[defines.userKeys.lastname] = jsonProfile['LastName'];
+    jsonProfileToDB[defines.userKeys.mailid] = jsonProfile['MailID'];
     jsonProfileToDB[defines.userKeys.password] = jsonProfile['Password'];
     jsonProfileToDB[defines.userKeys.projects] = jsonProfile['projectname'];
-    jsonProfileToDB[defines.userKeys.isverified] = false;
+    jsonProfileToDB[defines.userKeys.verified] = false;
+    jsonProfileToDB[defines.userKeys.verificationmailsent] = false;
     jsonProfileToDB[defines.userKeys.key] = cryptr.GetKey([jsonProfileToDB[defines.userKeys.username],
                                                            jsonProfileToDB[defines.userKeys.firstname],
                                                            jsonProfileToDB[defines.userKeys.lastname]]);
-    var jsonResponse = dbHandler.Insert(defines.dbDefines.Collection.users,jsonProfileToDB);
+    var jsonResponseDB = dbHandler.Insert(defines.dbDefines.Collection.users,jsonProfileToDB);
     if(jsonResponse.iResult != defines.dbDefines.Code.DataAdded){
         return defines.processNewUserCodes.DatabaseError;
     }
 
+    
+
+    var strMessage = '';
+    var strURL = '';
+    var jsonTemp = {};
+    jsonTemp[defines.userKeys.username] = jsonProfileToDB[defines.userKeys.username];
+    jsonTemp[defines.userKeys.password] = jsonProfileToDB[defines.userKeys.userKeys];
+    jsonTemp[defines.userKeys.firstname] = jsonProfileToDB[defines.userKeys.firstname];
+    jsonTemp[defines.userKeys.lastname] = jsonProfileToDB[defines.userKeys.lastname];
+    var strUserData = JSON.stringify(jsonTemp);
+    var strEncryptedData = cryptr.Encrypt(strUserData,jsonProfileToDB[defines.userKeys.key]);
+    var strEncryptedUsername = cryptr.Encrypt(jsonProfileToDB[defines.userKeys.username],strPasswordKey);
+    //Need to continue
     /*
     Need To Add Email sending stuff here.
     Encrypt some fields of userprofile with userkey and send a mail
     mail would contain crs.com/user/verification/encryptedstuff
     implement a get method for the same 
     */
+    var jsonResponseMail = email.Send(strPasswordKey,jsonProfileToDB[defines.userKeys.mailid],'Verification Mail',strMessage);
 
     return defines.processNewUserCodes.Success;
 }

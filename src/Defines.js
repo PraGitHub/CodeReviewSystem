@@ -31,12 +31,13 @@ userKeys = {
     numrev:'numreviews',
     numreqinprogress:'numreqinprogress',
     numrevinprogress:'numrevinprogress',
-    islocked:'islocked',
-    isverified:'isverified'
+    locked:'locked',
+    verified:'verified',
+    verificationmailsent:'verificationmailsent'
 }
 
 mailDefines = {
-    Successful:1,
+    Success:1,
     Failed:2,
     Error:3
 }
