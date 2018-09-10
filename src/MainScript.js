@@ -75,12 +75,10 @@ app.post('/project/delete',function(httpReq,httpRes){
 
 app.post('/registeruser',function(httpReq,httpRes){
     console.log(httpReq.body);
-    var jsonUserProfile = {};
+    var jsonUserProfile = httpReq.body;
     if(typeof(httpReq.body.projectname) == 'string'){
-        console.log('One Project name is chosen')
+        //console.log('One Project name is chosen')
+        jsonUserProfile.projectname = [jsonUserProfile.projectname];
     }
-    else{
-        console.log('Multiple project names are chosen');
-    }
-    //Implement this...
+    var iReturnCode = helper.ProcessNewUser(jsonUserProfile);
 });

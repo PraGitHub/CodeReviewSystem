@@ -30,7 +30,7 @@ var fpInsert = function Insert(strCollectionName,jsonData){
         }
         else{
             jsonReturn.jsonResponse = result.result;
-            if(result != null || result != undefined){
+            if(result.result != null || result.result != undefined){
                 jsonReturn.iResult = defines.dbDefines.Code.DataAdded;
             }
             else{

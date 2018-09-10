@@ -41,6 +41,14 @@ mailDefines = {
     Error:3
 }
 
+processNewUserCodes = {
+    InvalidUserData:1,
+    ExistingUser:2,
+    DatabaseError:3,
+    Success:4,
+    MailNotSent:5
+}
+
 function FilljsonPaths(){
     var strParent = __dirname;
     var iIndex = strParent.indexOf('/src');
@@ -63,3 +71,4 @@ module.exports.dbDefines = dbDefines;
 module.exports.userKeys = userKeys;
 module.exports.mailDefines = mailDefines;
 module.exports.Paths = jsonPaths;
+module.exports.processNewUserCodes = processNewUserCodes;

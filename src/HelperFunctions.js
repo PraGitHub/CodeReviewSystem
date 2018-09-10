@@ -1,5 +1,7 @@
 var dbHandler = require(__dirname+'/DatabaseHandler.js');
 var defines = require(__dirname+'/Defines.js');
+var cryptr = require(__dirname+'/CryptrWrapper.js');
+var email = require(__dirname+'/eMail.js');
 var fs = require('fs');
 var strArgs = process.argv.toString();
 
@@ -96,16 +98,26 @@ var fpIsSuperuser = function IsSuperuser(strUsername,strPassword){
     return true or false based on the existence
     */
    var bRetVal = false;
-   var jsonData = {
-       username:strUsername.toUpperCase(),
-       password:strPassword
-   };
+   var jsonData = {};
+   jsonData[defines.userKeys.username] = strUsername.toUpperCase();
+   jsonData[defines.userKeys.password] = strPassword;
    var jsonResponse = dbHandler.Query(defines.dbDefines.Collection.superusers,jsonData);
    if(jsonResponse.iResult == defines.dbDefines.Code.DataFound){
        bRetVal = true;
    }
    //console.log(jsonResponse);
    return bRetVal;
+}
+
+var fpIsExistingUser = function IsExistingUser(strUserName){
+    var bRetVal = false;
+    var jsonData = {};
+    jsonData[defines.userKeys.username] - strUserName.toUpperCase();
+    var jsonResponse = dbHandler.Query(defines.dbDefines.Collection.users,jsonData);
+    if(jsonResponse.iResult == defines.dbDefines.Code.DataFound){
+        bRetVal = true;
+    }
+    return bRetVal;
 }
 
 var fpInsertProject = function InsertProject(strProjectName,strUserName){
@@ -173,6 +185,52 @@ var fpDeleteProject = function DeleteProject(arrayProjectName){
     return strHtmlResponse;
 }
 
+var fpIsAnyKeyUndefined = function IsAnyKeyUndefined(jsonIn){
+    var bReturn = true;
+    for(let key in jsonIn){
+        if(jsonIn[key] == undefined){
+            bReturn = false;
+            break;
+        }
+    }
+    return bReturn;
+}
+
+var fpProcessNewUser = function ProcessNewUser(jsonProfile){
+    var jsonProfileToDB = {};
+    if(jsonProfile == undefined){
+        return defines.processNewUserCodes.InvalidUserData;
+    }
+    if(fpIsAnyKeyUndefined(jsonProfile) == false){
+        return defines.processNewUserCodes.InvalidUserData;
+    }
+    if(fpIsExistingUser(jsonProfile['UserName']) == true){
+        return defines.processNewUserCodes.ExistingUser;
+    }
+    jsonProfileToDB[defines.userKeys.username] = jsonProfile['UserName'];
+    jsonProfileToDB[defines.userKeys.firstname] = jsonProfile['FirstName'];
+    jsonProfileToDB[defines.userKeys.lastname] = jsonProfile['LastName'];
+    jsonProfileToDB[defines.userKeys.password] = jsonProfile['Password'];
+    jsonProfileToDB[defines.userKeys.projects] = jsonProfile['projectname'];
+    jsonProfileToDB[defines.userKeys.isverified] = false;
+    jsonProfileToDB[defines.userKeys.key] = cryptr.GetKey([jsonProfileToDB[defines.userKeys.username],
+                                                           jsonProfileToDB[defines.userKeys.firstname],
+                                                           jsonProfileToDB[defines.userKeys.lastname]]);
+    var jsonResponse = dbHandler.Insert(defines.dbDefines.Collection.users,jsonProfileToDB);
+    if(jsonResponse.iResult != defines.dbDefines.Code.DataAdded){
+        return defines.processNewUserCodes.DatabaseError;
+    }
+
+    /*
+    Need To Add Email sending stuff here.
+    Encrypt some fields of userprofile with userkey and send a mail
+    mail would contain crs.com/user/verification/encryptedstuff
+    implement a get method for the same 
+    */
+
+    return defines.processNewUserCodes.Success;
+}
+
 
 module.exports.GetArgument = fpGetArgument;
 module.exports.AddProjectDropDown = fpAddProjectDropDown;
@@ -182,3 +240,4 @@ module.exports.DeleteProject = fpDeleteProject;
 module.exports.GetHTMLResponse = fpGetHTMLResponse;
 module.exports.InsertProject = fpInsertProject;
 module.exports.IsSuperuser = fpIsSuperuser;
+module.exports.ProcessNewUser = fpProcessNewUser;

@@ -52,14 +52,14 @@ var Send = function(strPasswordKey,strMailId,strSubject,strMessage){
 
 
 //Testing
-var key ;
-var fs = require('fs');
-var message = fs.readFileSync(defines.Paths.html+'/Result.html').toString();
+//var key ;
+//var fs = require('fs');
+//var message = fs.readFileSync(defines.Paths.html+'/Result.html').toString();
 //console.log(message);
 //var result = Send(key,'prashanthhn2509@gmail.com','CodeReviewSystem',message);
 //var result = Send(key,'prashanth.hn@efi.com','CodeReviewSystem',message);
 //var result = Send(key,'prashanthhn2509@gmail.com','CodeReviewSystem','<html><body><h2>TestMail</h2><p>This is message1</p><p>This is message2</p></body></html>');
-console.log('result = ',result);
+//console.log('result = ',result);
 
 
 module.exports.Send = Send;
