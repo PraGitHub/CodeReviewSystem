@@ -207,9 +207,9 @@ var fpProcessNewUser = function ProcessNewUser(jsonProfile,strPasswordKey){
     if(fpIsExistingUser(jsonProfile['UserName']) == true){
         return defines.processNewUserCodes.ExistingUser;
     }
-    jsonProfileToDB[defines.userKeys.username] = jsonProfile['UserName'];
-    jsonProfileToDB[defines.userKeys.firstname] = jsonProfile['FirstName'];
-    jsonProfileToDB[defines.userKeys.lastname] = jsonProfile['LastName'];
+    jsonProfileToDB[defines.userKeys.username] = jsonProfile['UserName'].toUpperCase()
+    jsonProfileToDB[defines.userKeys.firstname] = jsonProfile['FirstName'].toUpperCase();
+    jsonProfileToDB[defines.userKeys.lastname] = jsonProfile['LastName'].toUpperCase();
     jsonProfileToDB[defines.userKeys.mailid] = jsonProfile['MailID'];
     jsonProfileToDB[defines.userKeys.password] = jsonProfile['Password'];
     jsonProfileToDB[defines.userKeys.projects] = jsonProfile['projectname'];
@@ -223,10 +223,8 @@ var fpProcessNewUser = function ProcessNewUser(jsonProfile,strPasswordKey){
         return defines.processNewUserCodes.DatabaseError;
     }
 
-    
-
     var strMessage = '';
-    var strURL = '';
+    var strURL = 'http://localhost:8085/user/verification/';
     var jsonTemp = {};
     jsonTemp[defines.userKeys.username] = jsonProfileToDB[defines.userKeys.username];
     jsonTemp[defines.userKeys.password] = jsonProfileToDB[defines.userKeys.userKeys];
@@ -235,16 +233,39 @@ var fpProcessNewUser = function ProcessNewUser(jsonProfile,strPasswordKey){
     var strUserData = JSON.stringify(jsonTemp);
     var strEncryptedData = cryptr.Encrypt(strUserData,jsonProfileToDB[defines.userKeys.key]);
     var strEncryptedUsername = cryptr.Encrypt(jsonProfileToDB[defines.userKeys.username],strPasswordKey);
-    //Need to continue
-    /*
-    Need To Add Email sending stuff here.
-    Encrypt some fields of userprofile with userkey and send a mail
-    mail would contain crs.com/user/verification/encryptedstuff
-    implement a get method for the same 
-    */
+    strURL += strEncryptedUsername;
+    strURL += '/';
+    strURL += strEncryptedData;
+    strMessage += '<p>Please Click the below link to activate your account</p>';
+    strMessage += '<br>';
+    strMessage += '<a href="'+strURL+'">'+strURL+'</a><br>'
+
     var jsonResponseMail = email.Send(strPasswordKey,jsonProfileToDB[defines.userKeys.mailid],'Verification Mail',strMessage);
+    if(jsonResponseMail.iResult != defines.mailDefines.Success){
+        return defines.processNewUserCodes.MailNotSent;
+    }
 
     return defines.processNewUserCodes.Success;
+}
+
+var fpVerifyNewUser = function VerifyNewUser(strEncrypterUsername,strEncryptedUserdata,strPasswordKey){
+    var strUsername = cryptr.Decrypt(strEncrypterUsername,strPasswordKey);
+    var jsonQuery = {};
+    jsonQuery[defines.userKeys.username] = strUsername.toUpperCase();
+    var jsonResponse = dbHandler.Query(defines.dbDefines.Collection.users,jsonQuery);
+    if(jsonResponse.iResult != defines.dbDefines.DataNotFound){
+        return;//need to return something
+    }
+    var jsonUserProfile = jsonResponse.arrayjsonResult[0];
+    var strUserdata = cryptr.Decrypt(strEncryptedUserdata,jsonUserProfile[defines.userKeys.key]);
+    var jsonUserdata = JSON.parse(strUserdata);
+    for(let key in jsonUserdata){
+        if(jsonUserdata[key] != jsonUserProfile[key]){
+            return;//need to return something
+        }
+    }
+    //Mark user as verified
+    return;//need to return something
 }
 
 
@@ -257,3 +278,4 @@ module.exports.GetHTMLResponse = fpGetHTMLResponse;
 module.exports.InsertProject = fpInsertProject;
 module.exports.IsSuperuser = fpIsSuperuser;
 module.exports.ProcessNewUser = fpProcessNewUser;
+module.exports.VerifyNewUser = fpVerifyNewUser;

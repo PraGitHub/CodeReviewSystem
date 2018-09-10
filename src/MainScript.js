@@ -4,13 +4,13 @@ var bodyParser = require('body-parser');
 var helper = require(__dirname+'/HelperFunctions.js');
 var defines = require(__dirname+'/Defines.js')
 var httpPort = helper.GetArgument('-port=');
-var mailPassword = helper.GetArgument('-password=');
+var PassKey = helper.GetArgument('-password=');
 
 if(httpPort == undefined){
     httpPort = 8085;
 }
 
-console.log(httpPort,mailPassword);
+console.log(httpPort,PassKey);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
@@ -80,8 +80,14 @@ app.post('/registeruser',function(httpReq,httpRes){
         //console.log('One Project name is chosen')
         jsonUserProfile.projectname = [jsonUserProfile.projectname];
     }
-    var iReturnCode = helper.ProcessNewUser(jsonUserProfile,mailPassword);
+    var iReturnCode = helper.ProcessNewUser(jsonUserProfile,PassKey);
     if(iReturnCode == defines.ProcessNewUserCodes.Success){
-        
+        //Show something in UI
     }
+});
+
+app.get('/user/verification/:encusername/:encuserdata',function(httpReq,httpRes){
+    var strEncryptedUsername = httpReq.params.encusername;
+    var strEncryptedUserdata = httpReq.params.encuserdata;
+    helper.VerifyNewUser(strEncryptedUsername,strEncryptedUserdata,PassKey);
 });
