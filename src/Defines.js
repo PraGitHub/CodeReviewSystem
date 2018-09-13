@@ -42,12 +42,17 @@ mailDefines = {
     Error:3
 }
 
-processNewUserCodes = {
+GenericCodes = {
+    Unknown:0,
     InvalidUserData:1,
     ExistingUser:2,
     DatabaseError:3,
     Success:4,
-    MailNotSent:5
+    MailNotSent:5,
+    DataMismatch:6,
+    UserNotFound:7,
+    AlreadyVerified:8,
+    ExistingMailId:9
 }
 
 function FilljsonPaths(){
@@ -72,4 +77,4 @@ module.exports.dbDefines = dbDefines;
 module.exports.userKeys = userKeys;
 module.exports.mailDefines = mailDefines;
 module.exports.Paths = jsonPaths;
-module.exports.processNewUserCodes = processNewUserCodes;
+module.exports.GenericCodes = GenericCodes;

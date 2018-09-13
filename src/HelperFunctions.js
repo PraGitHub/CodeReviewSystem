@@ -120,6 +120,17 @@ var fpIsExistingUser = function IsExistingUser(strUserName){
     return bRetVal;
 }
 
+var fpIsExistingMailID = function IsExistingMailID(strMailId){
+    var bRetVal = false;
+    var jsonData = {};
+    jsonData[defines.userKeys.mailid] - strUserName.toUpperCase();
+    var jsonResponse = dbHandler.Query(defines.dbDefines.Collection.mailid,jsonData);
+    if(jsonResponse.iResult == defines.dbDefines.Code.DataFound){
+        bRetVal = true;
+    }
+    return bRetVal;
+}
+
 var fpInsertProject = function InsertProject(strProjectName,strUserName){
    var jsonData = {title:strProjectName.toUpperCase()};
    var strHtmlResponse = '';
@@ -199,13 +210,16 @@ var fpIsAnyKeyUndefined = function IsAnyKeyUndefined(jsonIn){
 var fpProcessNewUser = function ProcessNewUser(jsonProfile,strPasswordKey){
     var jsonProfileToDB = {};
     if(jsonProfile == undefined){
-        return defines.processNewUserCodes.InvalidUserData;
+        return defines.GenericCodes.InvalidUserData;
     }
     if(fpIsAnyKeyUndefined(jsonProfile) == false){
-        return defines.processNewUserCodes.InvalidUserData;
+        return defines.GenericCodes.InvalidUserData;
     }
     if(fpIsExistingUser(jsonProfile['UserName']) == true){
-        return defines.processNewUserCodes.ExistingUser;
+        return defines.GenericCodes.ExistingUser;
+    }
+    if(fpIsExistingMailID(jsonProfile['MailID']) == true){
+        return defines.GenericCodes.ExistingMailId;
     }
     jsonProfileToDB[defines.userKeys.username] = jsonProfile['UserName'].toUpperCase()
     jsonProfileToDB[defines.userKeys.firstname] = jsonProfile['FirstName'].toUpperCase();
@@ -220,7 +234,7 @@ var fpProcessNewUser = function ProcessNewUser(jsonProfile,strPasswordKey){
                                                            jsonProfileToDB[defines.userKeys.lastname]]);
     var jsonResponseDB = dbHandler.Insert(defines.dbDefines.Collection.users,jsonProfileToDB);
     if(jsonResponse.iResult != defines.dbDefines.Code.DataAdded){
-        return defines.processNewUserCodes.DatabaseError;
+        return defines.GenericCodes.DatabaseError;
     }
 
     var strMessage = '';
@@ -242,10 +256,10 @@ var fpProcessNewUser = function ProcessNewUser(jsonProfile,strPasswordKey){
 
     var jsonResponseMail = email.Send(strPasswordKey,jsonProfileToDB[defines.userKeys.mailid],'Verification Mail',strMessage);
     if(jsonResponseMail.iResult != defines.mailDefines.Success){
-        return defines.processNewUserCodes.MailNotSent;
+        return defines.GenericCodes.MailNotSent;
     }
 
-    return defines.processNewUserCodes.Success;
+    return defines.GenericCodes.Success;
 }
 
 var fpVerifyNewUser = function VerifyNewUser(strEncrypterUsername,strEncryptedUserdata,strPasswordKey){
@@ -254,18 +268,34 @@ var fpVerifyNewUser = function VerifyNewUser(strEncrypterUsername,strEncryptedUs
     jsonQuery[defines.userKeys.username] = strUsername.toUpperCase();
     var jsonResponse = dbHandler.Query(defines.dbDefines.Collection.users,jsonQuery);
     if(jsonResponse.iResult != defines.dbDefines.DataNotFound){
-        return;//need to return something
+        return defines.GenericCodes.UserNotFound;
     }
+
     var jsonUserProfile = jsonResponse.arrayjsonResult[0];
     var strUserdata = cryptr.Decrypt(strEncryptedUserdata,jsonUserProfile[defines.userKeys.key]);
     var jsonUserdata = JSON.parse(strUserdata);
     for(let key in jsonUserdata){
         if(jsonUserdata[key] != jsonUserProfile[key]){
-            return;//need to return something
+            return defines.GenericCodes.DataMismatch;
         }
     }
-    //Mark user as verified
-    return;//need to return something
+
+    if(jsonUserProfile[defines.userKeys.verified] == true){
+        return defines.GenericCodes.AlreadyVerified;
+    }
+
+    var jsonToUpdate = {};
+    jsonToUpdate[defines.userKeys.verified] = true;
+    jsonResponse = dbHandler.Update(defines.dbDefines.Collection.users,jsonQuery,jsonToUpdate);
+    if(jsonResponse.iResult == defines.dbDefines.Code.Error){
+        return defines.GenericCodes.DatabaseError;
+    }
+
+    if(jsonResponse.iResult == defines.dbDefines.Code.DataUpdated){
+        return defines.GenericCodes.Success;
+    }
+
+    return defines.GenericCodes.Unknown;
 }
 
 

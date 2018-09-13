@@ -4,7 +4,7 @@ var bodyParser = require('body-parser');
 var helper = require(__dirname+'/HelperFunctions.js');
 var defines = require(__dirname+'/Defines.js')
 var httpPort = helper.GetArgument('-port=');
-var PassKey = helper.GetArgument('-password=');
+var PassKey = helper.GetArgument('-passkey=');
 
 if(httpPort == undefined){
     httpPort = 8085;
@@ -73,21 +73,118 @@ app.post('/project/delete',function(httpReq,httpRes){
     }
 });
 
-app.post('/registeruser',function(httpReq,httpRes){
+app.post('/user/register',function(httpReq,httpRes){
     console.log(httpReq.body);
     var jsonUserProfile = httpReq.body;
     if(typeof(httpReq.body.projectname) == 'string'){
         //console.log('One Project name is chosen')
         jsonUserProfile.projectname = [jsonUserProfile.projectname];
     }
-    var iReturnCode = helper.ProcessNewUser(jsonUserProfile,PassKey);
-    if(iReturnCode == defines.ProcessNewUserCodes.Success){
-        //Show something in UI
+    var iResult = helper.ProcessNewUser(jsonUserProfile,PassKey);
+    switch(iResult){
+        case defines.GenericCodes.Success:{
+            httpRes.write(helper.GetHTMLResponse(
+                {
+                'message':'Verification mail has been sent to your registered e-mail address. Click the link you get with that e-mail.',
+                'alert':'success',
+                }
+            ));
+        }
+        case defines.GenericCodes.InvalidUserData:{
+            httpRes.write(helper.GetHTMLResponse(
+                {
+                'message':'Invalid data',
+                'alert':'warning',
+                }
+            ));
+        }
+        case defines.GenericCodes.ExistingUser:{
+            httpRes.write(helper.GetHTMLResponse(
+                {
+                'message':'Sorry! This username already exists. Please try again...',
+                'alert':'info',
+                }
+            ));
+        }
+        case defines.GenericCodes.ExistingMailId:{
+            httpRes.write(helper.GetHTMLResponse(
+                {
+                'message':'Sorry! This e-mail id already exists. Please try again...',
+                'alert':'info',
+                }
+            ));
+        }
+        case defines.GenericCodes.DatabaseError:{
+            httpRes.write(helper.GetHTMLResponse(
+                {
+                'message':'Sorry! Internal Error. Please try again...',
+                'alert':'danger',
+                }
+            ));
+        }
+        case defines.GenericCodes.MailNotSent:{
+            httpRes.write(helper.GetHTMLResponse(
+                {
+                'message':'Sorry! We could not have sent a mail to your registered e-mail address. Please try logging in...',
+                'alert':'danger',
+                }
+            ));
+        }
+        default:{
+            httpRes.write(helper.GetHTMLResponse(
+                {
+                'message':'Unknown',
+                'alert':'primary',
+                }
+            ));
+        }
     }
 });
 
 app.get('/user/verification/:encusername/:encuserdata',function(httpReq,httpRes){
     var strEncryptedUsername = httpReq.params.encusername;
     var strEncryptedUserdata = httpReq.params.encuserdata;
-    helper.VerifyNewUser(strEncryptedUsername,strEncryptedUserdata,PassKey);
+    var iResult = helper.VerifyNewUser(strEncryptedUsername,strEncryptedUserdata,PassKey);
+    switch(iResult){
+        case defines.GenericCodes.Success:{
+            httpRes.write(helper.GetHTMLResponse(
+                {
+                'message':'Congrats! You have been verfied as a user to Code Review System...',
+                'alert':'success',
+                }
+            ));
+        }
+        case defines.GenericCodes.DataMismatch:{
+            httpRes.write(helper.GetHTMLResponse(
+                {
+                'message':'Data Mismatch',
+                'alert':'warning',
+                }
+            ));
+        }
+        case defines.GenericCodes.AlreadyVerified:{
+            httpRes.write(helper.GetHTMLResponse(
+                {
+                'message':'You have already completed verification process...',
+                'alert':'info',
+                }
+            ));
+        }
+        case defines.GenericCodes.DatabaseError:{
+            httpRes.write(helper.GetHTMLResponse(
+                {
+                'message':'Sorry! Internal Error. Please try again...',
+                'alert':'danger',
+                }
+            ));
+        }
+        default:{
+            httpRes.write(helper.GetHTMLResponse(
+                {
+                'message':'Unknown',
+                'alert':'primary',
+                }
+            ));
+        }
+    }
 });
