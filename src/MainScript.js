@@ -81,6 +81,7 @@ app.post('/user/register',function(httpReq,httpRes){
         jsonUserProfile.projectname = [jsonUserProfile.projectname];
     }
     var iResult = helper.ProcessNewUser(jsonUserProfile,PassKey);
+    console.log('/user/register :: after processnewuser :: iResult = ',iResult);
     switch(iResult){
         case defines.GenericCodes.Success:{
             httpRes.write(helper.GetHTMLResponse(

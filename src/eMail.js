@@ -36,15 +36,16 @@ var Send = function(strPasswordKey,strMailId,strSubject,strMessage){
     };
     
     transporter.sendMail(helperOptions, function (err, info) {
-        console.log(info);
+        console.log('eMail :: info = ',info);
         jsonReturn.response = info.response;
         if (err) {
             jsonReturn.iResult = defines.mailDefines.Error;
         }
         else {
-            jsonReturn.iResult = defines.mailDefines.Successful;
+            jsonReturn.iResult = defines.mailDefines.Success;
             //Need to return find a way to determine successful/failure
         }
+        console.log('eMail :: jsonReturn = ',jsonReturn);
     });
     while(jsonReturn.iResult === undefined || jsonReturn.response === undefined)deasync.sleep(1);
     return jsonReturn;

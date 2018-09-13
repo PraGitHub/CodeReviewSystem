@@ -264,7 +264,12 @@ var fpProcessNewUser = function ProcessNewUser(jsonProfile,strPasswordKey){
     if(jsonResponseMail.iResult != defines.mailDefines.Success){
         return defines.GenericCodes.MailNotSent;
     }
-
+    var jsonToUpdate = {};
+    jsonToUpdate[defines.userKeys.verificationmailsent] = true;
+    jsonResponseDB = dbHandler.Update(defines.dbDefines.Collection.users,jsonProfileToDB,jsonToUpdate);
+    if(jsonResponseDB.iResult != defines.dbDefines.Code.DataUpdated){
+        return; //need to return something
+    }
     return defines.GenericCodes.Success;
 }
 
