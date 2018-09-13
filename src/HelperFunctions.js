@@ -112,10 +112,13 @@ var fpIsSuperuser = function IsSuperuser(strUsername,strPassword){
 var fpIsExistingUser = function IsExistingUser(strUserName){
     var bRetVal = false;
     var jsonData = {};
-    jsonData[defines.userKeys.username] - strUserName.toUpperCase();
+    jsonData[defines.userKeys.username] = strUserName.toUpperCase();
     var jsonResponse = dbHandler.Query(defines.dbDefines.Collection.users,jsonData);
     if(jsonResponse.iResult == defines.dbDefines.Code.DataFound){
-        bRetVal = true;
+        var jsonUserProfile = jsonResponse.arrayjsonResult[0];
+        if(jsonUserProfile[defines.userKeys.verified == true]){
+            bRetVal = true;
+        }
     }
     return bRetVal;
 }
@@ -123,8 +126,8 @@ var fpIsExistingUser = function IsExistingUser(strUserName){
 var fpIsExistingMailID = function IsExistingMailID(strMailId){
     var bRetVal = false;
     var jsonData = {};
-    jsonData[defines.userKeys.mailid] - strUserName.toUpperCase();
-    var jsonResponse = dbHandler.Query(defines.dbDefines.Collection.mailid,jsonData);
+    jsonData[defines.userKeys.mailid] = strMailId.toUpperCase();
+    var jsonResponse = dbHandler.Query(defines.dbDefines.Collection.users,jsonData);
     if(jsonResponse.iResult == defines.dbDefines.Code.DataFound){
         bRetVal = true;
     }
@@ -224,7 +227,7 @@ var fpProcessNewUser = function ProcessNewUser(jsonProfile,strPasswordKey){
     jsonProfileToDB[defines.userKeys.username] = jsonProfile['UserName'].toUpperCase()
     jsonProfileToDB[defines.userKeys.firstname] = jsonProfile['FirstName'].toUpperCase();
     jsonProfileToDB[defines.userKeys.lastname] = jsonProfile['LastName'].toUpperCase();
-    jsonProfileToDB[defines.userKeys.mailid] = jsonProfile['MailID'];
+    jsonProfileToDB[defines.userKeys.mailid] = jsonProfile['MailID'].toUpperCase();
     jsonProfileToDB[defines.userKeys.password] = jsonProfile['Password'];
     jsonProfileToDB[defines.userKeys.projects] = jsonProfile['projectname'];
     jsonProfileToDB[defines.userKeys.verified] = false;
@@ -233,7 +236,7 @@ var fpProcessNewUser = function ProcessNewUser(jsonProfile,strPasswordKey){
                                                            jsonProfileToDB[defines.userKeys.firstname],
                                                            jsonProfileToDB[defines.userKeys.lastname]]);
     var jsonResponseDB = dbHandler.Insert(defines.dbDefines.Collection.users,jsonProfileToDB);
-    if(jsonResponse.iResult != defines.dbDefines.Code.DataAdded){
+    if(jsonResponseDB.iResult != defines.dbDefines.Code.DataAdded){
         return defines.GenericCodes.DatabaseError;
     }
 
@@ -267,7 +270,7 @@ var fpVerifyNewUser = function VerifyNewUser(strEncrypterUsername,strEncryptedUs
     var jsonQuery = {};
     jsonQuery[defines.userKeys.username] = strUsername.toUpperCase();
     var jsonResponse = dbHandler.Query(defines.dbDefines.Collection.users,jsonQuery);
-    if(jsonResponse.iResult != defines.dbDefines.DataNotFound){
+    if(jsonResponse.iResult == defines.dbDefines.DataNotFound){
         return defines.GenericCodes.UserNotFound;
     }
 

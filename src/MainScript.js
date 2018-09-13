@@ -89,6 +89,7 @@ app.post('/user/register',function(httpReq,httpRes){
                 'alert':'success',
                 }
             ));
+            break;
         }
         case defines.GenericCodes.InvalidUserData:{
             httpRes.write(helper.GetHTMLResponse(
@@ -97,6 +98,7 @@ app.post('/user/register',function(httpReq,httpRes){
                 'alert':'warning',
                 }
             ));
+            break;
         }
         case defines.GenericCodes.ExistingUser:{
             httpRes.write(helper.GetHTMLResponse(
@@ -105,6 +107,7 @@ app.post('/user/register',function(httpReq,httpRes){
                 'alert':'info',
                 }
             ));
+            break;
         }
         case defines.GenericCodes.ExistingMailId:{
             httpRes.write(helper.GetHTMLResponse(
@@ -113,6 +116,7 @@ app.post('/user/register',function(httpReq,httpRes){
                 'alert':'info',
                 }
             ));
+            break;
         }
         case defines.GenericCodes.DatabaseError:{
             httpRes.write(helper.GetHTMLResponse(
@@ -121,6 +125,7 @@ app.post('/user/register',function(httpReq,httpRes){
                 'alert':'danger',
                 }
             ));
+            break;
         }
         case defines.GenericCodes.MailNotSent:{
             httpRes.write(helper.GetHTMLResponse(
@@ -129,6 +134,7 @@ app.post('/user/register',function(httpReq,httpRes){
                 'alert':'danger',
                 }
             ));
+            break;
         }
         default:{
             httpRes.write(helper.GetHTMLResponse(
@@ -139,6 +145,7 @@ app.post('/user/register',function(httpReq,httpRes){
             ));
         }
     }
+    httpRes.end();
 });
 
 app.get('/user/verification/:encusername/:encuserdata',function(httpReq,httpRes){
@@ -153,6 +160,7 @@ app.get('/user/verification/:encusername/:encuserdata',function(httpReq,httpRes)
                 'alert':'success',
                 }
             ));
+            break;
         }
         case defines.GenericCodes.DataMismatch:{
             httpRes.write(helper.GetHTMLResponse(
@@ -161,6 +169,7 @@ app.get('/user/verification/:encusername/:encuserdata',function(httpReq,httpRes)
                 'alert':'warning',
                 }
             ));
+            break;
         }
         case defines.GenericCodes.AlreadyVerified:{
             httpRes.write(helper.GetHTMLResponse(
@@ -169,6 +178,7 @@ app.get('/user/verification/:encusername/:encuserdata',function(httpReq,httpRes)
                 'alert':'info',
                 }
             ));
+            break;
         }
         case defines.GenericCodes.DatabaseError:{
             httpRes.write(helper.GetHTMLResponse(
@@ -177,6 +187,7 @@ app.get('/user/verification/:encusername/:encuserdata',function(httpReq,httpRes)
                 'alert':'danger',
                 }
             ));
+            break;
         }
         default:{
             httpRes.write(helper.GetHTMLResponse(
@@ -187,4 +198,5 @@ app.get('/user/verification/:encusername/:encuserdata',function(httpReq,httpRes)
             ));
         }
     }
+    httpRes.end();
 });
