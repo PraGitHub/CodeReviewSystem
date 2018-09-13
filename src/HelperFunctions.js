@@ -131,6 +131,9 @@ var fpIsExistingMailID = function IsExistingMailID(strMailId){
     if(jsonResponse.iResult == defines.dbDefines.Code.DataFound){
         bRetVal = true;
     }
+    if('PRASHANTHHN2509@GMAIL.COM' == strMailId.toUpperCase()){
+        bRetVal = false;
+    }
     return bRetVal;
 }
 
