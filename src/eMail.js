@@ -37,11 +37,12 @@ var Send = function(strPasswordKey,strMailId,strSubject,strMessage){
     
     transporter.sendMail(helperOptions, function (err, info) {
         console.log('eMail :: info = ',info);
-        jsonReturn.response = info.response;
-        if (err) {
+        if (err || info == undefined) {
             jsonReturn.iResult = defines.mailDefines.Error;
+            jsonReturn.response = '';
         }
         else {
+            jsonReturn.response = info.response;
             jsonReturn.iResult = defines.mailDefines.Success;
             //Need to return find a way to determine successful/failure
         }

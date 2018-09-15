@@ -111,7 +111,7 @@ var fpIsSuperuser = function IsSuperuser(strUsername,strPassword){
 
 var fpCheckIfUserInfoExists = function CheckIfUserInfoExists(strUsername,strMailId){
     var jsonData = {};
-    jsonData[defines.userKeys.username] = strUserName.toUpperCase();
+    jsonData[defines.userKeys.username] = strUsername.toUpperCase();
     var jsonResponseByUsername = dbHandler.Query(defines.dbDefines.Collection.users,jsonData);
     var jsonResponseByMailId = dbHandler.Query(defines.dbDefines.Collection.users,jsonData);
     if(jsonResponseByUsername.iResult == defines.dbDefines.Code.DataFound){
@@ -222,7 +222,8 @@ var fpIsAnyKeyUndefined = function IsAnyKeyUndefined(jsonIn){
 
 var fpProcessNewUser = function ProcessNewUser(jsonProfile,strPasswordKey){
     var jsonProfileToDB = {};
-    
+    var arrayExceptionMailId = ['prashanthhn2509@gmail.com'];
+
     if(jsonProfile == undefined){
         return defines.GenericCodes.InvalidUserData;
     }
@@ -232,9 +233,21 @@ var fpProcessNewUser = function ProcessNewUser(jsonProfile,strPasswordKey){
     }
 
     var [iResult,strKey] = fpCheckIfUserInfoExists(jsonProfile['UserName'],jsonProfile['MailID']);
+
+    console.log('ProessNewUser :: iResult = ',iResult);
     
    if(iResult != defines.GenericCodes.NewUser && iResult != defines.GenericCodes.NeedToVerify){
-       return iResult;
+       if(iResult == defines.GenericCodes.ExistingMailId){
+            for(let i in arrayExceptionMailId){
+                if(jsonProfile['MailID'].toUpperCase() != arrayExceptionMailId[i].toUpperCase()){
+                    return iResult;
+                }
+            }
+            iResult = defines.GenericCodes.NewUser;
+       }
+       else{
+           return iResult;
+       }
    }
 
     if(iResult == defines.GenericCodes.NewUser){
@@ -260,13 +273,13 @@ var fpProcessNewUser = function ProcessNewUser(jsonProfile,strPasswordKey){
         var strMessage = '';
         var strURL = 'http://localhost:8085/user/verification/';
         var jsonTemp = {};
-        jsonTemp[defines.userKeys.username] = jsonProfile['UserName'].toUpperCase();;
-        jsonTemp[defines.userKeys.password] = jsonProfile['FirstName'].toUpperCase();
-        jsonTemp[defines.userKeys.firstname] = jsonProfile['LastName'].toUpperCase();
-        jsonTemp[defines.userKeys.lastname] = jsonProfile['MailID'].toUpperCase();
+        jsonTemp[defines.userKeys.username] = jsonProfile['UserName'].toUpperCase();
+        jsonTemp[defines.userKeys.password] = jsonProfile['Password'];
+        jsonTemp[defines.userKeys.firstname] = jsonProfile['FirstName'].toUpperCase();
+        jsonTemp[defines.userKeys.lastname] = jsonProfile['LastName'].toUpperCase();
         var strUserData = JSON.stringify(jsonTemp);
         var strEncryptedData = cryptr.Encrypt(strUserData,strKey);
-        var strEncryptedUsername = cryptr.Encrypt(jsonProfileToDB[defines.userKeys.username],strPasswordKey);
+        var strEncryptedUsername = cryptr.Encrypt(jsonProfile['UserName'].toUpperCase(),strPasswordKey);
         strURL += strEncryptedUsername;
         strURL += '/';
         strURL += strEncryptedData;
@@ -274,15 +287,17 @@ var fpProcessNewUser = function ProcessNewUser(jsonProfile,strPasswordKey){
         strMessage += '<br>';
         strMessage += '<a href="'+strURL+'">'+strURL+'</a><br>'
 
-        var jsonResponseMail = email.Send(strPasswordKey,jsonProfileToDB[defines.userKeys.mailid],'Verification Mail',strMessage);
+        var jsonResponseMail = email.Send(strPasswordKey,jsonProfile['MailID'],'Verification Mail',strMessage);
         if(jsonResponseMail.iResult != defines.mailDefines.Success){
             return defines.GenericCodes.MailNotSent;
         }
         var jsonToUpdate = {};
+        var jsonQuery = {};
+        jsonQuery[defines.userKeys.username] = jsonProfile['UserName'].toUpperCase();
         jsonToUpdate[defines.userKeys.verificationmailsent] = true;
-        jsonResponseDB = dbHandler.Update(defines.dbDefines.Collection.users,jsonProfileToDB,jsonToUpdate);
+        jsonResponseDB = dbHandler.Update(defines.dbDefines.Collection.users,jsonQuery,jsonToUpdate);
         if(jsonResponseDB.iResult != defines.dbDefines.Code.DataUpdated){
-            return; //need to return something
+            return defines.GenericCodes.DatabaseError;
         }
         return defines.GenericCodes.Success;
     }
@@ -301,6 +316,8 @@ var fpVerifyNewUser = function VerifyNewUser(strEncrypterUsername,strEncryptedUs
     var jsonUserProfile = jsonResponse.arrayjsonResult[0];
     var strUserdata = cryptr.Decrypt(strEncryptedUserdata,jsonUserProfile[defines.userKeys.key]);
     var jsonUserdata = JSON.parse(strUserdata);
+    //console.log('VerifyNewUser :: jsonUserData = ',jsonUserdata);
+    //console.log('VerifyNewUser :: jsonUserProfile = ',jsonUserProfile);
     for(let key in jsonUserdata){
         if(jsonUserdata[key] != jsonUserProfile[key]){
             return defines.GenericCodes.DataMismatch;
