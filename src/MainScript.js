@@ -137,6 +137,24 @@ app.post('/user/register',function(httpReq,httpRes){
             ));
             break;
         }
+        case defines.GenericCodes.NeedToChangeUsername:{
+            httpRes.write(helper.GetHTMLResponse(
+                {
+                'message':'Sorry! The username you have chosen is not available. Please try again with different username...',
+                'alert':'warning',
+                }
+            ));
+            break;
+        }
+        case defines.GenericCodes.AlreadyVerified:{
+            httpRes.write(helper.GetHTMLResponse(
+                {
+                'message':'You have already completed verification process...',
+                'alert':'info',
+                }
+            ));
+            break;
+        }
         default:{
             httpRes.write(helper.GetHTMLResponse(
                 {

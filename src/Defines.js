@@ -52,7 +52,10 @@ GenericCodes = {
     DataMismatch:6,
     UserNotFound:7,
     AlreadyVerified:8,
-    ExistingMailId:9
+    ExistingMailId:9,
+    NeedToVerify:10,
+    NeedToChangeUsername:11,
+    NewUser:12
 }
 
 function FilljsonPaths(){

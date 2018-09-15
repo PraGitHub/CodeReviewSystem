@@ -109,32 +109,39 @@ var fpIsSuperuser = function IsSuperuser(strUsername,strPassword){
    return bRetVal;
 }
 
-var fpIsExistingUser = function IsExistingUser(strUserName){
-    var bRetVal = false;
+var fpCheckIfUserInfoExists = function CheckIfUserInfoExists(strUsername,strMailId){
     var jsonData = {};
     jsonData[defines.userKeys.username] = strUserName.toUpperCase();
-    var jsonResponse = dbHandler.Query(defines.dbDefines.Collection.users,jsonData);
-    if(jsonResponse.iResult == defines.dbDefines.Code.DataFound){
-        var jsonUserProfile = jsonResponse.arrayjsonResult[0];
-        if(jsonUserProfile[defines.userKeys.verified == true]){
-            bRetVal = true;
+    var jsonResponseByUsername = dbHandler.Query(defines.dbDefines.Collection.users,jsonData);
+    var jsonResponseByMailId = dbHandler.Query(defines.dbDefines.Collection.users,jsonData);
+    if(jsonResponseByUsername.iResult == defines.dbDefines.Code.DataFound){
+        if(jsonResponseByMailId.iResult == defines.dbDefines.Code.DataFound){
+            if(jsonResponseByMailId.arrayjsonResult[0][defines.userKeys.username] == jsonResponseByUsername.arrayjsonResult[0][defines.userKeys.username]){
+                if(jsonResponseByMailId.arrayjsonResult[0][defines.userKeys.verified] == false){
+                    return [defines.GenericCodes.NeedToVerify,jsonResponseByMailId.arrayjsonResult[0][defines.userKeys.key]];
+                }
+                else{
+                    return [defines.GenericCodes.AlreadyVerified,undefined];
+                }
+            }
+            else{
+                return [defines.GenericCodes.ExistingMailId,undefined];
+            }
+        }
+        if(jsonResponseByMailId.iResult == defines.dbDefines.Code.DataNotFound){
+            return [defines.GenericCodes.NeedToChangeUsername,undefined];
+        }
+        return [defines.GenericCodes.DatabaseError,undefined];
+    }
+    if(jsonResponseByUsername.iResult == defines.dbDefines.Code.DataNotFound){
+        if(jsonResponseByMailId.iResult == defines.dbDefines.Code.DataFound){
+            return [defines.GenericCodes.ExistingMailId,undefined];
+        }
+        if(jsonResponseByMailId.iResult == defines.dbDefines.Code.DataNotFound){
+            return [defines.GenericCodes.NewUser,undefined];
         }
     }
-    return bRetVal;
-}
-
-var fpIsExistingMailID = function IsExistingMailID(strMailId){
-    var bRetVal = false;
-    var jsonData = {};
-    jsonData[defines.userKeys.mailid] = strMailId.toUpperCase();
-    var jsonResponse = dbHandler.Query(defines.dbDefines.Collection.users,jsonData);
-    if(jsonResponse.iResult == defines.dbDefines.Code.DataFound){
-        bRetVal = true;
-    }
-    if('PRASHANTHHN2509@GMAIL.COM' == strMailId.toUpperCase()){
-        bRetVal = false;
-    }
-    return bRetVal;
+    return [defines.GenericCodes.DatabaseError,undefined];
 }
 
 var fpInsertProject = function InsertProject(strProjectName,strUserName){
@@ -215,62 +222,71 @@ var fpIsAnyKeyUndefined = function IsAnyKeyUndefined(jsonIn){
 
 var fpProcessNewUser = function ProcessNewUser(jsonProfile,strPasswordKey){
     var jsonProfileToDB = {};
+    
     if(jsonProfile == undefined){
         return defines.GenericCodes.InvalidUserData;
     }
+
     if(fpIsAnyKeyUndefined(jsonProfile) == false){
         return defines.GenericCodes.InvalidUserData;
     }
-    if(fpIsExistingUser(jsonProfile['UserName']) == true){
-        return defines.GenericCodes.ExistingUser;
-    }
-    if(fpIsExistingMailID(jsonProfile['MailID']) == true){
-        return defines.GenericCodes.ExistingMailId;
-    }
-    jsonProfileToDB[defines.userKeys.username] = jsonProfile['UserName'].toUpperCase()
-    jsonProfileToDB[defines.userKeys.firstname] = jsonProfile['FirstName'].toUpperCase();
-    jsonProfileToDB[defines.userKeys.lastname] = jsonProfile['LastName'].toUpperCase();
-    jsonProfileToDB[defines.userKeys.mailid] = jsonProfile['MailID'].toUpperCase();
-    jsonProfileToDB[defines.userKeys.password] = jsonProfile['Password'];
-    jsonProfileToDB[defines.userKeys.projects] = jsonProfile['projectname'];
-    jsonProfileToDB[defines.userKeys.verified] = false;
-    jsonProfileToDB[defines.userKeys.verificationmailsent] = false;
-    jsonProfileToDB[defines.userKeys.key] = cryptr.GetKey([jsonProfileToDB[defines.userKeys.username],
-                                                           jsonProfileToDB[defines.userKeys.firstname],
-                                                           jsonProfileToDB[defines.userKeys.lastname]]);
-    var jsonResponseDB = dbHandler.Insert(defines.dbDefines.Collection.users,jsonProfileToDB);
-    if(jsonResponseDB.iResult != defines.dbDefines.Code.DataAdded){
-        return defines.GenericCodes.DatabaseError;
+
+    var [iResult,strKey] = fpCheckIfUserInfoExists(jsonProfile['UserName'],jsonProfile['MailID']);
+    
+   if(iResult != defines.GenericCodes.NewUser && iResult != defines.GenericCodes.NeedToVerify){
+       return iResult;
+   }
+
+    if(iResult == defines.GenericCodes.NewUser){
+        jsonProfileToDB[defines.userKeys.username] = jsonProfile['UserName'].toUpperCase();
+        jsonProfileToDB[defines.userKeys.firstname] = jsonProfile['FirstName'].toUpperCase();
+        jsonProfileToDB[defines.userKeys.lastname] = jsonProfile['LastName'].toUpperCase();
+        jsonProfileToDB[defines.userKeys.mailid] = jsonProfile['MailID'].toUpperCase();
+        jsonProfileToDB[defines.userKeys.password] = jsonProfile['Password'];
+        jsonProfileToDB[defines.userKeys.projects] = jsonProfile['projectname'];
+        jsonProfileToDB[defines.userKeys.verified] = false;
+        jsonProfileToDB[defines.userKeys.verificationmailsent] = false;
+        jsonProfileToDB[defines.userKeys.key] = cryptr.GetKey([jsonProfileToDB[defines.userKeys.username],
+                                                            jsonProfileToDB[defines.userKeys.firstname],
+                                                            jsonProfileToDB[defines.userKeys.lastname]]);
+        var jsonResponseDB = dbHandler.Insert(defines.dbDefines.Collection.users,jsonProfileToDB);
+        if(jsonResponseDB.iResult != defines.dbDefines.Code.DataAdded){
+            return defines.GenericCodes.DatabaseError;
+        }
+        strKey = jsonProfileToDB[defines.userKeys.key];
     }
 
-    var strMessage = '';
-    var strURL = 'http://localhost:8085/user/verification/';
-    var jsonTemp = {};
-    jsonTemp[defines.userKeys.username] = jsonProfileToDB[defines.userKeys.username];
-    jsonTemp[defines.userKeys.password] = jsonProfileToDB[defines.userKeys.userKeys];
-    jsonTemp[defines.userKeys.firstname] = jsonProfileToDB[defines.userKeys.firstname];
-    jsonTemp[defines.userKeys.lastname] = jsonProfileToDB[defines.userKeys.lastname];
-    var strUserData = JSON.stringify(jsonTemp);
-    var strEncryptedData = cryptr.Encrypt(strUserData,jsonProfileToDB[defines.userKeys.key]);
-    var strEncryptedUsername = cryptr.Encrypt(jsonProfileToDB[defines.userKeys.username],strPasswordKey);
-    strURL += strEncryptedUsername;
-    strURL += '/';
-    strURL += strEncryptedData;
-    strMessage += '<p>Please Click the below link to activate your account</p>';
-    strMessage += '<br>';
-    strMessage += '<a href="'+strURL+'">'+strURL+'</a><br>'
+    if(iResult == defines.GenericCodes.NewUser || iResult == defines.GenericCodes.NeedToVerify){
+        var strMessage = '';
+        var strURL = 'http://localhost:8085/user/verification/';
+        var jsonTemp = {};
+        jsonTemp[defines.userKeys.username] = jsonProfile['UserName'].toUpperCase();;
+        jsonTemp[defines.userKeys.password] = jsonProfile['FirstName'].toUpperCase();
+        jsonTemp[defines.userKeys.firstname] = jsonProfile['LastName'].toUpperCase();
+        jsonTemp[defines.userKeys.lastname] = jsonProfile['MailID'].toUpperCase();
+        var strUserData = JSON.stringify(jsonTemp);
+        var strEncryptedData = cryptr.Encrypt(strUserData,strKey);
+        var strEncryptedUsername = cryptr.Encrypt(jsonProfileToDB[defines.userKeys.username],strPasswordKey);
+        strURL += strEncryptedUsername;
+        strURL += '/';
+        strURL += strEncryptedData;
+        strMessage += '<p>Please Click the below link to activate your account</p>';
+        strMessage += '<br>';
+        strMessage += '<a href="'+strURL+'">'+strURL+'</a><br>'
 
-    var jsonResponseMail = email.Send(strPasswordKey,jsonProfileToDB[defines.userKeys.mailid],'Verification Mail',strMessage);
-    if(jsonResponseMail.iResult != defines.mailDefines.Success){
-        return defines.GenericCodes.MailNotSent;
+        var jsonResponseMail = email.Send(strPasswordKey,jsonProfileToDB[defines.userKeys.mailid],'Verification Mail',strMessage);
+        if(jsonResponseMail.iResult != defines.mailDefines.Success){
+            return defines.GenericCodes.MailNotSent;
+        }
+        var jsonToUpdate = {};
+        jsonToUpdate[defines.userKeys.verificationmailsent] = true;
+        jsonResponseDB = dbHandler.Update(defines.dbDefines.Collection.users,jsonProfileToDB,jsonToUpdate);
+        if(jsonResponseDB.iResult != defines.dbDefines.Code.DataUpdated){
+            return; //need to return something
+        }
+        return defines.GenericCodes.Success;
     }
-    var jsonToUpdate = {};
-    jsonToUpdate[defines.userKeys.verificationmailsent] = true;
-    jsonResponseDB = dbHandler.Update(defines.dbDefines.Collection.users,jsonProfileToDB,jsonToUpdate);
-    if(jsonResponseDB.iResult != defines.dbDefines.Code.DataUpdated){
-        return; //need to return something
-    }
-    return defines.GenericCodes.Success;
+    return defines.GenericCodes.Unknown;
 }
 
 var fpVerifyNewUser = function VerifyNewUser(strEncrypterUsername,strEncryptedUserdata,strPasswordKey){
