@@ -48,7 +48,7 @@
         <br>
         <div class="tab-pane container active" id="Home">
             <div class="row">
-                <div class="col-sm-4">
+                <div class="col-4">
                     <div class="alert alert-primary text-center">
                         <strong>User Login</strong>
                     </div>
@@ -71,12 +71,16 @@
                         </div>
                     </form>
                     <div>
+                        <button onclick="OnchangePassword()" class="btn btn-outline-warning text-dark">Forgot Password / Change Password</button>
+                    </div>
+                    <br>
+                    <div>
                         New user ? Click here to register
                         <button onclick="OnRegister()" class="btn btn-success">Register</button>
                     </div>
                 </div>
                 <br>
-                <div class="col-sm-8">
+                <div class="col-8">
                     <div class="alert alert-primary text-center">
                         <strong>
                            Statistics
@@ -171,6 +175,9 @@
     <script type="text/javascript">
         function OnRegister(){
             location.href = "/register";
+        }
+        function OnchangePassword(){
+            location.href = "/user/password/change";
         }
         function OnDeleteProject(){
             if(document.getElementById("deleteprojectform").projectname.value == "#NOTHING#"){

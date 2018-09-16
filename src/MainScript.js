@@ -219,3 +219,31 @@ app.get('/user/verification/:encusername/:encuserdata',function(httpReq,httpRes)
     }
     httpRes.end();
 });
+
+app.get('/user/password/change',function(httpReq,httpRes){
+    /*
+    Send a mail containing the following url
+        website/user/changepassword/verification/:encusername/:encuserdata
+    Also implement a get method for the same url
+    */
+   httpRes.write(helper.GetHTMLResponse({'message':'Yet to implement...','alert':'warning'}));
+   httpRes.end();
+});
+
+app.get('/user/password/verification/:encusername/:encuserdata',function(httpReq,httpRes){
+    /*
+    Decrypt username and userdata
+    If it matches then provide a password change form
+    */
+   httpRes.write(helper.GetHTMLResponse({'message':'Yet to implement...','alert':'warning'}));
+   httpRes.end();
+});
+
+app.post('/user/password/change',function(httpReq,httpRes){
+    /*
+    Update the password to database
+    Provide user an appropriate message and a link to home page to login
+    */
+   httpRes.write(helper.GetHTMLResponse({'message':'Yet to implement...','alert':'warning'}));
+   httpRes.end();
+});
