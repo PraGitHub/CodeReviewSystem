@@ -1,5 +1,15 @@
 var jsonPaths = {};
-var listKeysOfjsonPaths = ['src','html'];
+var listKeysOfjsonPaths = ['src','html','routes'];
+var jsonPathKeys = {
+    'src':{
+        0:'src',
+        1:['routes']
+    },
+    'html':{
+        0:'html',
+        1:undefined
+    }
+}
 
 dbDefines = {
     Code:{
@@ -67,14 +77,20 @@ function FilljsonPaths(){
     strParent = strParent.substr(0,iIndex);//this will contain parent or root directory
     jsonPaths['root'] = strParent;
     jsonPaths['parent'] = strParent;
-    for(let i in listKeysOfjsonPaths){
-        strKey = listKeysOfjsonPaths[i];
-        jsonPaths[strKey] = strParent+'/'+strKey;
+    for(let i in jsonPathKeys){
+        strKey1 = jsonPathKeys[i][0];
+        jsonPaths[strKey1] = strParent+'/'+strKey1;
+        if(jsonPathKeys[i][1] != undefined){
+            for(let k in jsonPathKeys[i][1]){
+                strKey2 = jsonPathKeys[i][1][k]
+                jsonPaths[strKey2] = strParent+'/'+strKey1+'/'+strKey2;
+            }
+        }
     }
 }
 
 FilljsonPaths();
-//console.log(jsonPaths);
+console.log(jsonPaths);
 
 module.exports.dbDefines = dbDefines;
 module.exports.userKeys = userKeys;
