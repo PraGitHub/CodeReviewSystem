@@ -1,5 +1,4 @@
 var jsonPaths = {};
-var listKeysOfjsonPaths = ['src','html','routes'];
 var jsonPathKeys = {
     'src':{
         0:'src',
@@ -90,7 +89,7 @@ function FilljsonPaths(){
 }
 
 FilljsonPaths();
-console.log(jsonPaths);
+//console.log(jsonPaths);
 
 module.exports.dbDefines = dbDefines;
 module.exports.userKeys = userKeys;
