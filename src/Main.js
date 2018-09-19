@@ -26,12 +26,6 @@ app.get('/',function(httpReq,httpRes){
     httpRes.end();
 });
 
-app.get('/register',function(httpReq,httpRes){
-    var strHTMLToSend = helper.AddProjectDropDown(defines.Paths.html+'/Register.html');
-    httpRes.write(strHTMLToSend);
-    httpRes.end();
-});
-
 app.post('/project/add',function(httpReq,httpRes){
     var bIsSuperuser = helper.IsSuperuser(httpReq.body.username,httpReq.body.password);
     if(bIsSuperuser){
@@ -71,6 +65,12 @@ app.post('/project/delete',function(httpReq,httpRes){
             httpRes.end();
         }
     }
+});
+
+app.get('/user/register',function(httpReq,httpRes){
+    var strHTMLToSend = helper.AddProjectDropDown(defines.Paths.html+'/Register.html');
+    httpRes.write(strHTMLToSend);
+    httpRes.end();
 });
 
 app.post('/user/register',function(httpReq,httpRes){

@@ -33,7 +33,7 @@ Gerrit - https://www.youtube.com/watch?v=a0xMde2GI00
  
  Run the command - "npm install" from parent directory
  
- Run the command - "node MainScript.js -port=PortNumber" from 'parent/src' directory
+ Run the command - "node Main.js -port=PortNumber" from 'parent/src' directory
         PortNumber - Can be any unused port @ that time.
         If you do not specify any port number(i.e. if the command is - "node MainScript.js" then, by default the port number will be 8085. 
 
