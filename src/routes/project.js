@@ -1,5 +1,5 @@
 var express = require('express')
-var router = express.router();
+var router = express.Router();
 var defines = JSON.parse(process.env.defines);
 var helper = require(defines.Paths.src+'/HelperFunctions.js');
 

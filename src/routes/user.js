@@ -1,5 +1,5 @@
 var express = require('express')
-var router = express.router();
+var router = express.Router();
 var defines = JSON.parse(process.env.defines);
 var helper = require(defines.Paths.src+'/HelperFunctions.js');
 
@@ -16,7 +16,7 @@ router.post('/register',function(httpReq,httpRes){
         //console.log('One Project name is chosen')
         jsonUserProfile.projectname = [jsonUserProfile.projectname];
     }
-    var iResult = helper.ProcessNewUser(jsonUserProfile,PassKey);
+    var iResult = helper.ProcessNewUser(jsonUserProfile,process.env.PassKey);
     console.log('/register :: after processnewuser :: iResult = ',iResult);
     switch(iResult){
         case defines.GenericCodes.Success:{
@@ -106,7 +106,7 @@ router.post('/register',function(httpReq,httpRes){
 router.get('/verification/:encusername/:encuserdata',function(httpReq,httpRes){
     var strEncryptedUsername = httpReq.params.encusername;
     var strEncryptedUserdata = httpReq.params.encuserdata;
-    var iResult = helper.VerifyNewUser(strEncryptedUsername,strEncryptedUserdata,PassKey);
+    var iResult = helper.VerifyNewUser(strEncryptedUsername,strEncryptedUserdata,process.env.PassKey);
     switch(iResult){
         case defines.GenericCodes.Success:{
             httpRes.write(helper.GetHTMLResponse(
