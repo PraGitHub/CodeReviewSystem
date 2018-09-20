@@ -1,6 +1,6 @@
 var express = require('express')
 var router = express.router();
-var defines = process.env.defines;
+var defines = JSON.parse(process.env.defines);
 var helper = require(defines.Paths.src+'/HelperFunctions.js');
 
 router.post('/add',function(httpReq,httpRes){

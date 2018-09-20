@@ -3,7 +3,7 @@ This is to implement email sender.
 A new user should be sent an e-mail while registering in order to check users' authenticity
 look for npm nodemailer
 */
-var defines = require(__dirname+'/Defines.js');
+var defines = JSON.parse(process.env.defines);
 var nodemailer = require('nodemailer');
 var cryptr = require(__dirname+'/CryptrWrapper.js');
 var strEncryptedPassword = '1100cb65afc550b19046ded9fa11f14f343a28';

@@ -1,5 +1,5 @@
 var dbHandler = require(__dirname+'/DatabaseHandler.js');
-var defines = require(__dirname+'/Defines.js');
+var defines = JSON.parse(process.env.defines);
 var cryptr = require(__dirname+'/CryptrWrapper.js');
 var email = require(__dirname+'/eMail.js');
 var fs = require('fs');

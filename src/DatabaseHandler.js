@@ -1,7 +1,7 @@
 var dbURL = "mongodb://localhost:27017/";
 var mongoClient = require('mongodb').MongoClient;
 var deasync = require('deasync');
-var defines = require(__dirname+'/Defines.js');
+var defines = JSON.parse(process.env.defines);
 //var CollectionList = ['Projects','Users','SuperUser'];
 var jsonCollection = {};
 mongoClient.connect(dbURL, {useNewUrlParser:true},function (err, db) {

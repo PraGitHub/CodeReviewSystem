@@ -1,8 +1,9 @@
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
+var defines = require(__dirname+'/Defines.js');
+process.env.defines = JSON.stringify(defines);
 var helper = require(__dirname+'/HelperFunctions.js');
-var defines = require(__dirname+'/Defines.js')
 var httpPort = helper.GetArgument('-port=');
 var PassKey = helper.GetArgument('-passkey=');
 
