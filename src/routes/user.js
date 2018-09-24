@@ -22,7 +22,7 @@ router.post('/register',function(httpReq,httpRes){
         case defines.GenericCodes.Success:{
             httpRes.write(helper.GetHTMLResponse(
                 {
-                'message':'Verification mail has been sent to your registered e-mail address. Click the link you get with that e-mail.',
+                'message':'Verification mail has been sent to your registered e-mail address.\nClick the link you get with that e-mail.',
                 'alert':'success',
                 }
             ));
@@ -67,7 +67,7 @@ router.post('/register',function(httpReq,httpRes){
         case defines.GenericCodes.MailNotSent:{
             httpRes.write(helper.GetHTMLResponse(
                 {
-                'message':'Sorry! We could not have sent a mail to your registered e-mail address. Please try logging in...',
+                'message':'Sorry!\nWe could not have sent a mail to your registered e-mail address.\nPlease try logging in...',
                 'alert':'danger',
                 }
             ));
@@ -76,7 +76,7 @@ router.post('/register',function(httpReq,httpRes){
         case defines.GenericCodes.NeedToChangeUsername:{
             httpRes.write(helper.GetHTMLResponse(
                 {
-                'message':'Sorry! The username you have chosen is not available. Please try again with different username...',
+                'message':'Sorry!\nThe username you have chosen is not available.\nPlease try again with different username...',
                 'alert':'warning',
                 }
             ));
@@ -111,7 +111,7 @@ router.get('/verification/:encusername/:encuserdata',function(httpReq,httpRes){
         case defines.GenericCodes.Success:{
             httpRes.write(helper.GetHTMLResponse(
                 {
-                'message':'Congrats! You have been verfied as a user to Code Review System...',
+                'message':'Congrats!\nYou have been verfied as a user to Code Review System...',
                 'alert':'success',
                 }
             ));
@@ -138,7 +138,7 @@ router.get('/verification/:encusername/:encuserdata',function(httpReq,httpRes){
         case defines.GenericCodes.DatabaseError:{
             httpRes.write(helper.GetHTMLResponse(
                 {
-                'message':'Sorry! Internal Error. Please try again...',
+                'message':'Sorry!\nInternal Error. Please try again...',
                 'alert':'danger',
                 }
             ));
@@ -156,20 +156,27 @@ router.get('/verification/:encusername/:encuserdata',function(httpReq,httpRes){
     httpRes.end();
 });
 
-router.get('/password/change',function(httpReq,httpRes){
+router.get('/password/change/request',function(httpReq,httpRes){
+    /*
+    Send GetUserInfo.html to collect user info
+    */
+   httpRes.sendFile(defines.Paths.html+'/GetUserInfo.html');
+});
+
+router.post('/password/change/request',function(httpReq,httpRes){
     /*
     Send a mail containing the following url
         website/user/changepassword/verification/:encusername/:encuserdata
     Also implement a get method for the same url
     */
-   httpRes.write(helper.GetHTMLResponse({'message':'Yet to implement...','alert':'warning'}));
+   httpRes.write(helper.GetHTMLResponse({'message':'Hi '+httpReq.body.UserName+'\nYet to implement...','alert':'danger'}));
    httpRes.end();
 });
 
 router.get('/password/verification/:encusername/:encuserdata',function(httpReq,httpRes){
     /*
     Decrypt username and userdata
-    If it matches then provide a password change form
+    If it matches then provide a password change form - PasswordChange.html
     */
    httpRes.write(helper.GetHTMLResponse({'message':'Yet to implement...','alert':'warning'}));
    httpRes.end();
@@ -182,6 +189,10 @@ router.post('/password/change',function(httpReq,httpRes){
     */
    httpRes.write(helper.GetHTMLResponse({'message':'Yet to implement...','alert':'warning'}));
    httpRes.end();
+});
+
+router.post('/login',function(httpReq,httpRes){
+
 });
 
 module.exports = router;

@@ -36,26 +36,25 @@ var fpGetHTMLResponse = function GetHTMLResponse(JSONInputs = {
     strToReturn = strToReturn.substr(0,iIndex+strKeyWord.length);
     strToReturn += '<br>';
    }
-   strToReturn += '<div class="container-fluid">';
-   strToReturn += '<div class="row">';
-   strToReturn += '<div class="col-7">';
+
+   var strMessage = '';
+   var strTempMessage = JSONInputs.message;
+    while (true) {
+        var iPos = strTempMessage.indexOf('\n');
+        var strLine = strTempMessage.substr(0, iPos);
+        if (strLine == null || strLine == "") {//EOF
+            strMessage = strMessage + '<a>' + strTempMessage + '</a><br/>';
+            break;
+        }
+        strMessage = strMessage + '<a>' + strLine + '</a><br/>';
+        strTempMessage = strTempMessage.substr(iPos + 1);
+    }
+
+   strToReturn += '<div class="col">';
    strToReturn += '<div class="alert alert-'+JSONInputs.alert+'">';
    strToReturn += '<strong><pre>';
-   strToReturn += JSONInputs.message;
+   strToReturn += strMessage;
    strToReturn += '</pre></strong>';
-   strToReturn += '</div>';
-   strToReturn += '</div>';
-   strToReturn += '<div class="col-2">';
-   strToReturn += '</div>';
-   strToReturn += '<div class="col-3">';
-   if(bIncludeHeader == true){
-    strToReturn += '<ul class="nav nav-pills bg-dark flex-column">';
-    strToReturn += '<li class="nav-item border-bottom">';
-    strToReturn += '<a class="nav-pills nav-link text-white" href="/">Home</a>';
-    strToReturn += '</li>';
-    strToReturn += '</ul>';
-   }
-   strToReturn += '</div>';
    strToReturn += '</div>';
    strToReturn += '</div>';
    strToReturn += '<br>';
