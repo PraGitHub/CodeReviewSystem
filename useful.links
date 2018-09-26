@@ -2,3 +2,8 @@ Deasync :
      https://stackoverflow.com/questions/23339907/returning-a-value-from-callback-function-in-node-js
     https://gist.github.com/akirattii/edf9d397bea06941959f3b52013e9a86
     https://github.com/abbr/deasync/blob/master/quick-test.js
+    
+User session handling : 
+    
+https://stormpath.com/blog/everything-you-ever-wanted-to-know-about-node-dot-js-sessions
+https://www.google.co.in/url?sa=t&source=web&rct=j&url=https://www.codementor.io/mayowa.a/how-to-build-a-simple-session-based-authentication-system-with-nodejs-from-scratch-6vn67mcy3&ved=2ahUKEwj0nNCYwdfdAhUKXn0KHSb5DU0QFjACegQIBhAB&usg=AOvVaw1rGnAl9vEKpaL-taFIpvYr&cshid=1537925272031
