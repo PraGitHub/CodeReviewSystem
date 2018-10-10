@@ -341,6 +341,15 @@ var fpVerifyNewUser = function VerifyNewUser(strEncrypterUsername,strEncryptedUs
     return defines.GenericCodes.Unknown;
 }
 
+var fpProcessPasswordChangeRequest = function(strUsername,strMailId){
+    /*
+    Check if user record exists
+        if not return appropriate value
+        else
+            obtain encrypted user data, frame the url and send a mail and return appropriate value
+    */
+}
+
 
 module.exports.GetArgument = fpGetArgument;
 module.exports.AddProjectDropDown = fpAddProjectDropDown;
@@ -352,3 +361,4 @@ module.exports.InsertProject = fpInsertProject;
 module.exports.IsSuperuser = fpIsSuperuser;
 module.exports.ProcessNewUser = fpProcessNewUser;
 module.exports.VerifyNewUser = fpVerifyNewUser;
+module.exports.ProcessPasswordChangeRequest = fpProcessPasswordChangeRequest;

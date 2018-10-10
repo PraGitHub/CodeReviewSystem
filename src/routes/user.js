@@ -169,6 +169,10 @@ router.post('/password/change/request',function(httpReq,httpRes){
         website/user/changepassword/verification/:encusername/:encuserdata
     Also implement a get method for the same url
     */
+   var strUsername = httpReq.body.UserName;
+   var strMailId = httpReq.body.MailID;
+   var iResult = helper.ProcessPasswordChangeRequest(strUsername,strMailId);
+   //switch case for iResult values
    httpRes.write(helper.GetHTMLResponse({'message':'Hi '+httpReq.body.UserName+'\nYet to implement...','alert':'danger'}));
    httpRes.end();
 });
