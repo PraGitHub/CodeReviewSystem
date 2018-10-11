@@ -348,6 +348,28 @@ var fpProcessPasswordChangeRequest = function(strUsername,strMailId){
         else
             obtain encrypted user data, frame the url and send a mail and return appropriate value
     */
+   var jsonQuery = {};
+   strUsername = strUsername.toUpperCase();
+   strMailId = strMailId.toUpperCase();
+   jsonQuery[defines.userKeys.username] = strUsername;
+   jsonQuery[defines.userKeys.mailid] = strMailId;
+   var jsonResult = dbHandler.Query(defines.dbDefines.Collection.users,jsonQuery);
+   if(jsonResult.iResult == defines.dbDefines.DataNotFound){
+       return defines.GenericCodes.UserNotFound;
+   }
+   var jsonUserData = jsonResult.arrayjsonResult[0];
+   var strUserKey = jsonUserData[defines.userKeys.key];
+   var strPassword = jsonUserData[defines.userKeys.password];
+
+   var jsonDataToEncrypt = {};
+   jsonDataToEncrypt[defines.userKeys.username] = strUserName;
+   jsonDataToEncrypt[defines.userKeys.mailid] = strMailId;
+   jsonDataToEncrypt[defines.userKeys.password] = strPassword;
+   var strDataToEncrypt = JSON.toString(jsonDataToEncrypt);
+   var strEncryptedUsername = cryptr.Encrypt(strUsername,strUserKey);
+   var strEncryptedData = cryptr.Encrypt(strDataToEncrypt,strUserKey);
+   var strURL = 'localhost:8085/user/password/verification/'+strEncryptedUsername+'/'+strEncryptedData;
+   //write code to send mail
 }
 
 
