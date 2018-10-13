@@ -9,7 +9,8 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceFolder}\\src\\MainScript.js"
+            "program": "${workspaceFolder}\\src\\Main.js",
+            "args":["-passkey="]
         }
     ]
 }
