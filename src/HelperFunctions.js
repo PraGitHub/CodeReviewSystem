@@ -341,13 +341,7 @@ var fpVerifyNewUser = function VerifyNewUser(strEncrypterUsername,strEncryptedUs
     return defines.GenericCodes.Unknown;
 }
 
-var fpProcessPasswordChangeRequest = function(strUsername,strMailId){
-    /*
-    Check if user record exists
-        if not return appropriate value
-        else
-            obtain encrypted user data, frame the url and send a mail and return appropriate value
-    */
+var fpProcessPasswordChangeRequest = function ProcessPasswordChangeRequest(strUsername,strMailId,strPasswordKey){
    var jsonQuery = {};
    strUsername = strUsername.toUpperCase();
    strMailId = strMailId.toUpperCase();
@@ -362,16 +356,48 @@ var fpProcessPasswordChangeRequest = function(strUsername,strMailId){
    var strPassword = jsonUserData[defines.userKeys.password];
 
    var jsonDataToEncrypt = {};
-   jsonDataToEncrypt[defines.userKeys.username] = strUserName;
+   jsonDataToEncrypt[defines.userKeys.username] = strUsername;
    jsonDataToEncrypt[defines.userKeys.mailid] = strMailId;
    jsonDataToEncrypt[defines.userKeys.password] = strPassword;
-   var strDataToEncrypt = JSON.toString(jsonDataToEncrypt);
-   var strEncryptedUsername = cryptr.Encrypt(strUsername,strUserKey);
+   var strDataToEncrypt = JSON.stringify(jsonDataToEncrypt);
+   var strEncryptedUsername = cryptr.Encrypt(strUsername,strPasswordKey);
    var strEncryptedData = cryptr.Encrypt(strDataToEncrypt,strUserKey);
-   var strURL = 'localhost:8085/user/password/verification/'+strEncryptedUsername+'/'+strEncryptedData;
-   //write code to send mail
+
+   var strURL = 'http://localhost:8085/user/password/verification/'+strEncryptedUsername+'/'+strEncryptedData;
+   var strMessage = 'Click this link to proceed with password change process... '+strURL;
+   var jsonResponseMail = email.Send(strPasswordKey,strMailId,'Password change request',strMessage);
+   if(jsonResponseMail.iResult != defines.mailDefines.Success){
+    return defines.GenericCodes.MailNotSent;
+   }
+   return defines.GenericCodes.Success;
 }
 
+var fpProcessPasswordChange = function ProcessPasswordChange(strEncryptedUsername,strEncryptedData,strPasswordKey){
+    
+}
+
+var fpProcessUserdata = function ProcessUserdata(strEncryptedUsername,strEncryptedData,strPasswordKey){
+    var strUsername = cryptr.Decrypt(strEncryptedUsername,strPasswordKey);
+    strUsername = strUsername.toUpperCase();
+    var jsonQuery = {};
+    jsonQuery[defines.userKeys.username] = strUsername;
+    var jsonResponse = dbHandler.Query(defines.dbDefines.Collection.users,jsonQuery);
+    if(jsonResponse.iResult == defines.dbDefines.DataNotFound){
+        return defines.GenericCodes.UserNotFound;
+    }
+
+    var jsonUserProfile = jsonResponse.arrayjsonResult[0];
+    var strUserdata = cryptr.Decrypt(strEncryptedData,jsonUserProfile[defines.userKeys.key]);
+    var jsonUserdata = JSON.parse(strUserdata);
+
+    for(let key in jsonUserdata){
+        if(jsonUserdata[key] != jsonUserProfile[key]){
+            return defines.GenericCodes.DataMismatch;
+        }
+    }
+
+    return defines.GenericCodes.Success;
+}
 
 module.exports.GetArgument = fpGetArgument;
 module.exports.AddProjectDropDown = fpAddProjectDropDown;
@@ -384,3 +410,5 @@ module.exports.IsSuperuser = fpIsSuperuser;
 module.exports.ProcessNewUser = fpProcessNewUser;
 module.exports.VerifyNewUser = fpVerifyNewUser;
 module.exports.ProcessPasswordChangeRequest = fpProcessPasswordChangeRequest;
+module.exports.ProcessPasswordChange = fpProcessPasswordChange;
+module.exports.ProcessUserdata = fpProcessUserdata;

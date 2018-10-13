@@ -171,9 +171,44 @@ router.post('/password/change/request',function(httpReq,httpRes){
     */
    var strUsername = httpReq.body.UserName;
    var strMailId = httpReq.body.MailID;
-   var iResult = helper.ProcessPasswordChangeRequest(strUsername,strMailId);
-   //switch case for iResult values
-   httpRes.write(helper.GetHTMLResponse({'message':'Hi '+httpReq.body.UserName+'\nYet to implement...','alert':'danger'}));
+   var iResult = helper.ProcessPasswordChangeRequest(strUsername,strMailId,process.env.PassKey);
+   switch(iResult){
+       case defines.GenericCodes.UserNotFound:{
+            httpRes.write(helper.GetHTMLResponse(
+                {
+                    'message':'User does not exist!',
+                    'alert':'danger'
+                }
+            ));
+            break;
+       }
+       case defines.GenericCodes.MailNotSent:{
+            httpRes.write(helper.GetHTMLResponse(
+                {
+                    'message':'Hi '+strUsername+'\n'+'We are sorry to say that we could not send passwod change link to your mail address. Please try again...',
+                    'alert':'danger'
+                }
+            ));
+            break;
+       }
+       case defines.GenericCodes.Success:{
+            httpRes.write(helper.GetHTMLResponse(
+                {
+                    'message':'Hi '+strUsername+'\n'+'Password change link has been mailed to you. Please check you registered mailbox...',
+                    'alert':'success'
+                }
+            ));
+            break;
+       }
+       default:{
+            httpRes.write(helper.GetHTMLResponse(
+                {
+                'message':'Unknown',
+                'alert':'primary',
+                }
+            ));
+       }
+   }
    httpRes.end();
 });
 
@@ -182,8 +217,45 @@ router.get('/password/verification/:encusername/:encuserdata',function(httpReq,h
     Decrypt username and userdata
     If it matches then provide a password change form - PasswordChange.html
     */
-   httpRes.write(helper.GetHTMLResponse({'message':'Yet to implement...','alert':'warning'}));
-   httpRes.end();
+   var strEncryptedUsername = httpReq.params.encusername;
+   var strEncryptedUserdata = httpReq.params.encuserdata;
+   var iResult = helper.ProcessUserdata(strEncryptedUsername,strEncryptedUserdata,process.env.PassKey);
+   
+   switch(iResult){
+       case defines.GenericCodes.UserNotFound:{
+            httpRes.write(helper.GetHTMLResponse(
+                {
+                    'message':'User does not exist!',
+                    'alert':'danger'
+                }
+            ));
+           break;
+       }
+       case defines.GenericCodes.DataMismatch:{
+            httpRes.write(helper.GetHTMLResponse(
+                {
+                'message':'Data Mismatch',
+                'alert':'warning',
+                }
+            ));
+           break;
+       }
+       case defines.GenericCodes.Success:{
+           httpRes.sendFile(defines.Paths.html+'/PasswordChange.html');
+           break;
+       }
+       default:{
+            httpRes.write(helper.GetHTMLResponse(
+                {
+                'message':'Unknown',
+                'alert':'primary',
+                }
+            ));
+       }
+   }
+   if(iResult != defines.GenericCodes.Success){
+       httpRes.end();
+   }
 });
 
 router.post('/password/change',function(httpReq,httpRes){
