@@ -219,8 +219,8 @@ router.get('/password/verification/:encusername/:encuserdata',function(httpReq,h
     */
    var strEncryptedUsername = httpReq.params.encusername;
    var strEncryptedUserdata = httpReq.params.encuserdata;
-   var iResult = helper.ProcessUserdata(strEncryptedUsername,strEncryptedUserdata,process.env.PassKey);
-   
+   var jsonResponse = helper.ProcessUserdata(strEncryptedUsername,strEncryptedUserdata,process.env.PassKey);
+   var iResult = jsonResponse.iResult;
    switch(iResult){
        case defines.GenericCodes.UserNotFound:{
             httpRes.write(helper.GetHTMLResponse(

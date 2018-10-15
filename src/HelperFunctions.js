@@ -219,6 +219,35 @@ var fpIsAnyKeyUndefined = function IsAnyKeyUndefined(jsonIn){
     return bReturn;
 }
 
+var fpProcessUserdata = function ProcessUserdata(strEncryptedUsername,strEncryptedData,strPasswordKey){
+    var jsonReturn = {};
+    jsonReturn['iResult'] = defines.dbDefines.Unknown; //just initialising
+    jsonReturn['jsonUserData'] = {};
+    var strUsername = cryptr.Decrypt(strEncryptedUsername,strPasswordKey);
+    strUsername = strUsername.toUpperCase();
+    var jsonQuery = {};
+    jsonQuery[defines.userKeys.username] = strUsername;
+    var jsonResponse = dbHandler.Query(defines.dbDefines.Collection.users,jsonQuery);
+    if(jsonResponse.iResult == defines.dbDefines.DataNotFound){
+        jsonReturn.iResult =  defines.GenericCodes.UserNotFound;
+        return jsonReturn;
+    }
+
+    var jsonUserProfile = jsonResponse.arrayjsonResult[0];
+    var strUserdata = cryptr.Decrypt(strEncryptedData,jsonUserProfile[defines.userKeys.key]);
+    var jsonUserdata = JSON.parse(strUserdata);
+
+    for(let key in jsonUserdata){
+        if(jsonUserdata[key] != jsonUserProfile[key]){
+            jsonReturn.iResult = defines.GenericCodes.DataMismatch;
+            return jsonReturn;
+        }
+    }
+    jsonReturn.jsonUserdata = jsonUserProfile;
+    jsonReturn.iResult = defines.GenericCodes.Success;
+    return jsonReturn;
+}
+
 var fpProcessNewUser = function ProcessNewUser(jsonProfile,strPasswordKey){
     var jsonProfileToDB = {};
     var arrayExceptionMailId = ['prashanthhn2509@gmail.com'];
@@ -304,24 +333,12 @@ var fpProcessNewUser = function ProcessNewUser(jsonProfile,strPasswordKey){
 }
 
 var fpVerifyNewUser = function VerifyNewUser(strEncrypterUsername,strEncryptedUserdata,strPasswordKey){
-    var strUsername = cryptr.Decrypt(strEncrypterUsername,strPasswordKey);
-    var jsonQuery = {};
-    jsonQuery[defines.userKeys.username] = strUsername.toUpperCase();
-    var jsonResponse = dbHandler.Query(defines.dbDefines.Collection.users,jsonQuery);
-    if(jsonResponse.iResult == defines.dbDefines.DataNotFound){
-        return defines.GenericCodes.UserNotFound;
+    var jsonResponse = fpProcessUserdata(strEncrypterUsername,strEncryptedUserdata,strPasswordKey);
+    if(jsonResponse.iResult != defines.GenericCodes.Success){
+        return jsonResponse.iResult;
     }
-
-    var jsonUserProfile = jsonResponse.arrayjsonResult[0];
-    var strUserdata = cryptr.Decrypt(strEncryptedUserdata,jsonUserProfile[defines.userKeys.key]);
-    var jsonUserdata = JSON.parse(strUserdata);
-    //console.log('VerifyNewUser :: jsonUserData = ',jsonUserdata);
-    //console.log('VerifyNewUser :: jsonUserProfile = ',jsonUserProfile);
-    for(let key in jsonUserdata){
-        if(jsonUserdata[key] != jsonUserProfile[key]){
-            return defines.GenericCodes.DataMismatch;
-        }
-    }
+    
+    var jsonUserProfile = jsonResponse.jsonUserdata;
 
     if(jsonUserProfile[defines.userKeys.verified] == true){
         return defines.GenericCodes.AlreadyVerified;
@@ -329,7 +346,7 @@ var fpVerifyNewUser = function VerifyNewUser(strEncrypterUsername,strEncryptedUs
 
     var jsonToUpdate = {};
     jsonToUpdate[defines.userKeys.verified] = true;
-    jsonResponse = dbHandler.Update(defines.dbDefines.Collection.users,jsonQuery,jsonToUpdate);
+    jsonResponse = dbHandler.Update(defines.dbDefines.Collection.users,jsonUserProfile,jsonToUpdate);
     if(jsonResponse.iResult == defines.dbDefines.Code.Error){
         return defines.GenericCodes.DatabaseError;
     }
@@ -376,28 +393,6 @@ var fpProcessPasswordChange = function ProcessPasswordChange(strEncryptedUsernam
     
 }
 
-var fpProcessUserdata = function ProcessUserdata(strEncryptedUsername,strEncryptedData,strPasswordKey){
-    var strUsername = cryptr.Decrypt(strEncryptedUsername,strPasswordKey);
-    strUsername = strUsername.toUpperCase();
-    var jsonQuery = {};
-    jsonQuery[defines.userKeys.username] = strUsername;
-    var jsonResponse = dbHandler.Query(defines.dbDefines.Collection.users,jsonQuery);
-    if(jsonResponse.iResult == defines.dbDefines.DataNotFound){
-        return defines.GenericCodes.UserNotFound;
-    }
-
-    var jsonUserProfile = jsonResponse.arrayjsonResult[0];
-    var strUserdata = cryptr.Decrypt(strEncryptedData,jsonUserProfile[defines.userKeys.key]);
-    var jsonUserdata = JSON.parse(strUserdata);
-
-    for(let key in jsonUserdata){
-        if(jsonUserdata[key] != jsonUserProfile[key]){
-            return defines.GenericCodes.DataMismatch;
-        }
-    }
-
-    return defines.GenericCodes.Success;
-}
 
 module.exports.GetArgument = fpGetArgument;
 module.exports.AddProjectDropDown = fpAddProjectDropDown;
