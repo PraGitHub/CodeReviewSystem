@@ -5,6 +5,17 @@ var email = require(__dirname+'/eMail.js');
 var fs = require('fs');
 var strArgs = process.argv.toString();
 
+var fpCheckTimeOut = function CheckTimeOut(strTime,strTimeOut){
+    var bRetVal = true;
+    var iTime = parseInt(strTime);
+    var iTimeOut = parseInt(strTimeOut);
+    var iCurrentTime = (new Date).getTime();
+    if((iCurrentTime - iTime) < iTimeOut){
+        bRetVal = false;
+    }
+    return bRetVal;
+}
+
 var fpGetArgument = function GetArgument(strArgKey){
     var iLen = strArgKey.length;
     var iStart;
@@ -219,8 +230,9 @@ var fpIsAnyKeyUndefined = function IsAnyKeyUndefined(jsonIn){
     return bReturn;
 }
 
-var fpProcessUserdata = function ProcessUserdata(strEncryptedUsername,strEncryptedData,strPasswordKey){
+var fpProcessUserdata = function ProcessUserdata(strEncryptedUsername,strEncryptedData){
     var jsonReturn = {};
+    var strPasswordKey = process.env.PassKey;
     jsonReturn['iResult'] = defines.dbDefines.Unknown; //just initialising
     jsonReturn['jsonUserData'] = {};
     var strUsername = cryptr.Decrypt(strEncryptedUsername,strPasswordKey);
@@ -248,8 +260,9 @@ var fpProcessUserdata = function ProcessUserdata(strEncryptedUsername,strEncrypt
     return jsonReturn;
 }
 
-var fpProcessNewUser = function ProcessNewUser(jsonProfile,strPasswordKey){
+var fpProcessNewUser = function ProcessNewUser(jsonProfile){
     var jsonProfileToDB = {};
+    var strPasswordKey = process.env.PassKey;
     var arrayExceptionMailId = ['prashanthhn2509@gmail.com'];
 
     if(jsonProfile == undefined){
@@ -332,7 +345,8 @@ var fpProcessNewUser = function ProcessNewUser(jsonProfile,strPasswordKey){
     return defines.GenericCodes.Unknown;
 }
 
-var fpVerifyNewUser = function VerifyNewUser(strEncrypterUsername,strEncryptedUserdata,strPasswordKey){
+var fpVerifyNewUser = function VerifyNewUser(strEncrypterUsername,strEncryptedUserdata){
+    var strPasswordKey = process.env.PassKey;
     var jsonResponse = fpProcessUserdata(strEncrypterUsername,strEncryptedUserdata,strPasswordKey);
     if(jsonResponse.iResult != defines.GenericCodes.Success){
         return jsonResponse.iResult;
@@ -358,8 +372,9 @@ var fpVerifyNewUser = function VerifyNewUser(strEncrypterUsername,strEncryptedUs
     return defines.GenericCodes.Unknown;
 }
 
-var fpProcessPasswordChangeRequest = function ProcessPasswordChangeRequest(strUsername,strMailId,strPasswordKey){
+var fpProcessPasswordChangeRequest = function ProcessPasswordChangeRequest(strUsername,strMailId){
    var jsonQuery = {};
+   strPasswordKey = process.env.PassKey;
    strUsername = strUsername.toUpperCase();
    strMailId = strMailId.toUpperCase();
    jsonQuery[defines.userKeys.username] = strUsername;
@@ -379,8 +394,10 @@ var fpProcessPasswordChangeRequest = function ProcessPasswordChangeRequest(strUs
    var strDataToEncrypt = JSON.stringify(jsonDataToEncrypt);
    var strEncryptedUsername = cryptr.Encrypt(strUsername,strPasswordKey);
    var strEncryptedData = cryptr.Encrypt(strDataToEncrypt,strUserKey);
+   var strTime = ((new Date).getTime()).toString();
+   var strEncrptedTime = cryptr.Encrypt(strTime,strPasswordKey);
 
-   var strURL = 'http://localhost:8085/user/password/verification/'+strEncryptedUsername+'/'+strEncryptedData;
+   var strURL = 'http://localhost:8085/user/password/verification/'+strEncrptedTime+'/'+strEncryptedUsername+'/'+strEncryptedData;
    var strMessage = 'Click this link to proceed with password change process... '+strURL;
    var jsonResponseMail = email.Send(strPasswordKey,strMailId,'Password change request',strMessage);
    if(jsonResponseMail.iResult != defines.mailDefines.Success){
@@ -389,8 +406,19 @@ var fpProcessPasswordChangeRequest = function ProcessPasswordChangeRequest(strUs
    return defines.GenericCodes.Success;
 }
 
-var fpProcessPasswordChange = function ProcessPasswordChange(strEncryptedUsername,strEncryptedData,strPasswordKey){
-    
+var fpProcessPasswordChange = function ProcessPasswordChange(strEncryptedUsername,strEncryptedData){
+    var strPasswordKey = process.env.PassKey;
+}
+
+var fpIsRecentRequest = function IsRecentRequest(strEncryptedTime){
+    var bRetVal = true;
+    var strPasswordKey = process.env.PassKey;
+    var strRequesteCreationTime = cryptr.Decrypt(strEncryptedTime,strPasswordKey);
+    var bTimeOut = fpCheckTimeOut(strRequesteCreationTime,defines.TimeOutTime);
+    if(bTimeOut == true){
+        bRetVal = false;
+    }
+    return bRetVal;
 }
 
 
@@ -407,3 +435,5 @@ module.exports.VerifyNewUser = fpVerifyNewUser;
 module.exports.ProcessPasswordChangeRequest = fpProcessPasswordChangeRequest;
 module.exports.ProcessPasswordChange = fpProcessPasswordChange;
 module.exports.ProcessUserdata = fpProcessUserdata;
+module.exports.IsRecentRequest = fpIsRecentRequest;
+module.exports.CheckTimeOut = fpCheckTimeOut;

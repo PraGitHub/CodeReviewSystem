@@ -96,3 +96,4 @@ module.exports.userKeys = userKeys;
 module.exports.mailDefines = mailDefines;
 module.exports.Paths = jsonPaths;
 module.exports.GenericCodes = GenericCodes;
+module.exports.TimeOutTime = '300000'// 5*60*1000 ms => 5 mins

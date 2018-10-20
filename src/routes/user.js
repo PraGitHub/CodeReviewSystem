@@ -16,7 +16,7 @@ router.post('/register',function(httpReq,httpRes){
         //console.log('One Project name is chosen')
         jsonUserProfile.projectname = [jsonUserProfile.projectname];
     }
-    var iResult = helper.ProcessNewUser(jsonUserProfile,process.env.PassKey);
+    var iResult = helper.ProcessNewUser(jsonUserProfile);
     console.log('/register :: after processnewuser :: iResult = ',iResult);
     switch(iResult){
         case defines.GenericCodes.Success:{
@@ -106,7 +106,7 @@ router.post('/register',function(httpReq,httpRes){
 router.get('/verification/:encusername/:encuserdata',function(httpReq,httpRes){
     var strEncryptedUsername = httpReq.params.encusername;
     var strEncryptedUserdata = httpReq.params.encuserdata;
-    var iResult = helper.VerifyNewUser(strEncryptedUsername,strEncryptedUserdata,process.env.PassKey);
+    var iResult = helper.VerifyNewUser(strEncryptedUsername,strEncryptedUserdata);
     switch(iResult){
         case defines.GenericCodes.Success:{
             httpRes.write(helper.GetHTMLResponse(
@@ -171,7 +171,7 @@ router.post('/password/change/request',function(httpReq,httpRes){
     */
    var strUsername = httpReq.body.UserName;
    var strMailId = httpReq.body.MailID;
-   var iResult = helper.ProcessPasswordChangeRequest(strUsername,strMailId,process.env.PassKey);
+   var iResult = helper.ProcessPasswordChangeRequest(strUsername,strMailId);
    switch(iResult){
        case defines.GenericCodes.UserNotFound:{
             httpRes.write(helper.GetHTMLResponse(
@@ -212,14 +212,32 @@ router.post('/password/change/request',function(httpReq,httpRes){
    httpRes.end();
 });
 
-router.get('/password/verification/:encusername/:encuserdata',function(httpReq,httpRes){
+router.get('/password/verification/:enctime/:encusername/:encuserdata',function(httpReq,httpRes){
     /*
     Decrypt username and userdata
     If it matches then provide a password change form - PasswordChange.html
     */
+   var strEncryptedTime = httpReq.params.enctime;
+   var bIsRecentRequest = helper.IsRecentRequest(strEncryptedTime);
+   if(bIsRecentRequest == false){
+        httpRes.write(helper.GetHTMLResponse(
+            {
+                'message':'Request Timed out !',
+                'alert':'danger'
+            }
+        ));
+        httpRes.write(helper.GetHTMLResponse(
+            {
+                'message':'Please try again...',
+                'alert':'warning'
+            }
+        ,false));
+        httpRes.end();
+        return;
+   }
    var strEncryptedUsername = httpReq.params.encusername;
    var strEncryptedUserdata = httpReq.params.encuserdata;
-   var jsonResponse = helper.ProcessUserdata(strEncryptedUsername,strEncryptedUserdata,process.env.PassKey);
+   var jsonResponse = helper.ProcessUserdata(strEncryptedUsername,strEncryptedUserdata);
    var iResult = jsonResponse.iResult;
    switch(iResult){
        case defines.GenericCodes.UserNotFound:{
