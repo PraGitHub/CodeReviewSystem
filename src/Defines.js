@@ -42,7 +42,8 @@ userKeys = {
     numrevinprogress:'numrevinprogress',
     locked:'locked',
     verified:'verified',
-    verificationmailsent:'verificationmailsent'
+    verificationmailsent:'verificationmailsent',
+    passwordchangerequested:'passwordchangerequested'
 }
 
 mailDefines = {

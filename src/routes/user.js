@@ -259,7 +259,8 @@ router.get('/password/verification/:enctime/:encusername/:encuserdata',function(
            break;
        }
        case defines.GenericCodes.Success:{
-           httpRes.sendFile(defines.Paths.html+'/PasswordChange.html');
+           var strPasswordChangeHTML = helper.GetPasswordChangeHTML(strEncryptedUsername);
+           httpRes.write(strPasswordChangeHTML);
            break;
        }
        default:{
@@ -271,9 +272,7 @@ router.get('/password/verification/:enctime/:encusername/:encuserdata',function(
             ));
        }
    }
-   if(iResult != defines.GenericCodes.Success){
-       httpRes.end();
-   }
+    httpRes.end();
 });
 
 router.post('/password/change',function(httpReq,httpRes){
@@ -281,8 +280,67 @@ router.post('/password/change',function(httpReq,httpRes){
     Update the password to database
     Provide user an appropriate message and a link to home page to login
     */
-   console.log('post:passwordchange :: body=',httpReq.body);
-   httpRes.write(helper.GetHTMLResponse({'message':'Yet to implement...','alert':'warning'}));
+   if(httpReq.body.Password != httpReq.body.ConfirmPassword){
+       httpRes.write(helper.GetHTMLResponse(
+           {
+               'message':'Hi '+httpReq.body.UserName+'!\n'+'Password Mismatch...',
+               'alert':'danger'
+           }
+       ));
+       httpRes.end();
+       return;
+   }
+   var strUsername = httpReq.body.UserName;
+   var strPassword = httpReq.body.Password;
+   var iResult = helper.UpdatePassword(strUsername,strPassword);
+
+   switch(iResult){
+        case defines.GenericCodes.Success:{
+            httpRes.write(helper.GetHTMLResponse(
+                {
+                    'message':'Hi '+strUsername+' ...'+'\nYour password has beed updated successfully !',
+                    'alert':'success'
+                }
+            ));
+            break;
+        }
+        case defines.GenericCodes.UserNotFound:{
+            httpRes.write(helper.GetHTMLResponse(
+                {
+                    'message':'You are not a valid user...',
+                    'alert':'warning'
+                }
+            ));
+            break;
+        }
+        case defines.GenericCodes.DatabaseError:{
+            httpRes.write(helper.GetHTMLResponse(
+                {
+                    'message':'Sorry '+strUsername+' !\nInternal Error. Please try again...',
+                    'alert':'danger'
+                }
+            ));
+            break;
+        }
+        case defines.GenericCodes.NotRequested:{
+            httpRes.write(helper.GetHTMLResponse(
+                {
+                    'message':'Hi '+strUsername+'\n You have not requested for password change...',
+                    'alert':'warning'
+                }
+            ));
+            break;
+        }
+        default:{
+            httpRes.write(helper.GetHTMLResponse(
+                {
+                    'message':'Unknown',
+                    'alert':'primary'
+                }
+            ));
+        }
+   }
+
    httpRes.end();
 });
 

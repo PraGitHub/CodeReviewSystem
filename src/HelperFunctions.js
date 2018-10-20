@@ -403,11 +403,18 @@ var fpProcessPasswordChangeRequest = function ProcessPasswordChangeRequest(strUs
    if(jsonResponseMail.iResult != defines.mailDefines.Success){
     return defines.GenericCodes.MailNotSent;
    }
-   return defines.GenericCodes.Success;
-}
 
-var fpProcessPasswordChange = function ProcessPasswordChange(strEncryptedUsername,strEncryptedData){
-    var strPasswordKey = process.env.PassKey;
+   var jsonToDB = {};
+   jsonToDB[defines.userKeys.passwordchangerequested] = true;
+   var jsonDBResponse = dbHandler.Update(defines.dbDefines.Collection.users,jsonQuery,jsonToDB);
+   if(jsonDBResponse.iResult == defines.dbDefines.Error){
+       return defines.GenericCodes.DatabaseError;
+   }
+   if(jsonDBResponse.iResult == defines.dbDefines.DataNotFound){
+       return defines.GenericCodes.UserNotFound;
+   }
+
+   return defines.GenericCodes.Success;
 }
 
 var fpIsRecentRequest = function IsRecentRequest(strEncryptedTime){
@@ -421,6 +428,44 @@ var fpIsRecentRequest = function IsRecentRequest(strEncryptedTime){
     return bRetVal;
 }
 
+var fpGetPasswordChangeHTML = function GetPasswordChangeHTML(strEncryptedUsername){
+    var strUsername = cryptr.Decrypt(strEncryptedUsername,process.env.PassKey);
+    var strHTMLConetentToWrite = '<input class="form-control" type="text" name="UserName" value="'+strUsername+'" pattern="[A-z a-z]{8,}" title="Minimium of 8 letters of upper/lower/mixed cases" readonly></input>';
+    var strKeyWord = '<!--USERNAME-->'
+    var strHTML = fs.readFileSync(defines.Paths.html+'/PasswordChange.html').toString();
+    var iPos = strHTML.indexOf(strKeyWord);
+    var strPreUsername = strHTML.substr(0,iPos+strKeyWord.length);
+    var strPostUsername = strHTML.substr(iPos+strKeyWord.length);
+    var strPasswordChangeHTML = strPreUsername + strHTMLConetentToWrite + strPostUsername;
+    return strPasswordChangeHTML;
+}
+
+var fpUpdatePassword = function UpdatePassword(strUsername,strPassword){
+    var strPasswordKey = process.env.PassKey;
+    var jsonQuery = {};
+    jsonQuery[defines.userKeys.username] = strUsername.toUpperCase();
+    var jsonDBResponse = dbHandler.Query(defines.dbDefines.Collection.users,jsonQuery);
+    if(jsonDBResponse.iResult == defines.dbDefines.Error){
+        return defines.GenericCodes.DatabaseError;
+    }
+    if(jsonDBResponse.iResult == defines.dbDefines.DataNotFound){
+        return defines.GenericCodes.UserNotFound;
+    }
+    var jsonUserProfile = jsonDBResponse.arrayjsonResult[0];
+    if(jsonUserProfile[defines.userKeys.passwordchangerequested] == false){
+        return defines.GenericCodes.NotRequested;
+    }
+    var jsonToDB = {};
+    jsonToDB[defines.userKeys.password] = strPassword;
+    jsonToDB[defines.userKeys.passwordchangerequested] = false;
+    jsonDBResponse = dbHandler.Update(defines.dbDefines.Collection.users,jsonQuery,jsonToDB);
+
+    if(jsonDBResponse.iResult == defines.dbDefines.Error){
+        return defines.GenericCodes.DatabaseError;
+    }
+
+    return defines.GenericCodes.Success;
+}
 
 module.exports.GetArgument = fpGetArgument;
 module.exports.AddProjectDropDown = fpAddProjectDropDown;
@@ -433,7 +478,8 @@ module.exports.IsSuperuser = fpIsSuperuser;
 module.exports.ProcessNewUser = fpProcessNewUser;
 module.exports.VerifyNewUser = fpVerifyNewUser;
 module.exports.ProcessPasswordChangeRequest = fpProcessPasswordChangeRequest;
-module.exports.ProcessPasswordChange = fpProcessPasswordChange;
+module.exports.UpdatePassword = fpUpdatePassword;
 module.exports.ProcessUserdata = fpProcessUserdata;
 module.exports.IsRecentRequest = fpIsRecentRequest;
 module.exports.CheckTimeOut = fpCheckTimeOut;
+module.exports.GetPasswordChangeHTML = fpGetPasswordChangeHTML;
