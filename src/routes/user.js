@@ -281,6 +281,7 @@ router.post('/password/change',function(httpReq,httpRes){
     Update the password to database
     Provide user an appropriate message and a link to home page to login
     */
+   console.log('post:passwordchange :: body=',httpReq.body);
    httpRes.write(helper.GetHTMLResponse({'message':'Yet to implement...','alert':'warning'}));
    httpRes.end();
 });
