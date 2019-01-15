@@ -1,13 +1,14 @@
-var dbURL = "mongodb://localhost:27017/";
+//var dbURL = "mongodb://localhost:27017/";
 var mongoClient = require('mongodb').MongoClient;
 var deasync = require('deasync');
 var defines = JSON.parse(process.env.defines);
 //var CollectionList = ['Projects','Users','SuperUser'];
+var dbURL = defines.server.dbURL;
 var jsonCollection = {};
 mongoClient.connect(dbURL, {useNewUrlParser:true},function (err, db) {
     if (err) throw err;
     console.log("DB Strated...");
-    dbObject = db.db("CodeReviewSystem");
+    dbObject = db.db(defines.dbDefines.dbname);
     for(let i in defines.dbDefines.Collection){
         var strCollectionName = defines.dbDefines.Collection[i];
         dbObject.createCollection(strCollectionName, function (err, res) {

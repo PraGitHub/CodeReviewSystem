@@ -1,3 +1,4 @@
+var cryptr = require(__dirname+'/CryptrWrapper.js');
 var jsonPaths = {};
 var jsonPathKeys = {
     'src':{
@@ -10,7 +11,14 @@ var jsonPathKeys = {
     }
 }
 
+server = {
+    "host":"codereviewsystem.herokuapp.com",
+    "protocol":"https",
+    "dbURL":"mongodb://codereviewsystem:<password>@ds257054.mlab.com:57054/codereviewsystem"
+}
+
 dbDefines = {
+    "dbname":"codereviewsystem"
     Code:{
         Error:1,
         DataNotFound:2,
@@ -89,7 +97,17 @@ function FilljsonPaths(){
     }
 }
 
+function FrameDBURL(){
+    var strdbURL = server.dbURL;
+    var strEncryptedPassword = '1100cb65afc550b19046ded9fa11f14f343a28';
+    var strPasskey = process.env.PassKey;
+    var strPassword = cryptr.Decrypt(strEncryptedPassword,strPasskey);
+    strdbURL = strdbURL.replace('<password>',strPassword);
+    server.dbURL = strdbURL;
+}
+
 FilljsonPaths();
+FrameDBURL();
 //console.log(jsonPaths);
 
 module.exports.dbDefines = dbDefines;
@@ -98,3 +116,4 @@ module.exports.mailDefines = mailDefines;
 module.exports.Paths = jsonPaths;
 module.exports.GenericCodes = GenericCodes;
 module.exports.TimeOutTime = '300000'// 5*60*1000 ms => 5 mins
+module.exports.server = server

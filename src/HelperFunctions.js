@@ -312,7 +312,7 @@ var fpProcessNewUser = function ProcessNewUser(jsonProfile){
 
     if(iResult == defines.GenericCodes.NewUser || iResult == defines.GenericCodes.NeedToVerify){
         var strMessage = '';
-        var strURL = 'http://localhost:8085/user/verification/';
+        var strURL = defines.server.protocol+'//'+defines.server.host+'/user/verification/';
         var jsonTemp = {};
         jsonTemp[defines.userKeys.username] = jsonProfile['UserName'].toUpperCase();
         jsonTemp[defines.userKeys.password] = jsonProfile['Password'];
@@ -397,7 +397,7 @@ var fpProcessPasswordChangeRequest = function ProcessPasswordChangeRequest(strUs
    var strTime = ((new Date).getTime()).toString();
    var strEncrptedTime = cryptr.Encrypt(strTime,strPasswordKey);
 
-   var strURL = 'http://localhost:8085/user/password/verification/'+strEncrptedTime+'/'+strEncryptedUsername+'/'+strEncryptedData;
+   var strURL = defines.server.protocol+'//'+defines.server.host+'/user/password/verification/'+strEncrptedTime+'/'+strEncryptedUsername+'/'+strEncryptedData;
    var strMessage = 'Click this link to proceed with password change process... '+strURL;
    var jsonResponseMail = email.Send(strPasswordKey,strMailId,'Password change request',strMessage);
    if(jsonResponseMail.iResult != defines.mailDefines.Success){
