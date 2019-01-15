@@ -6,7 +6,7 @@ var defines = JSON.parse(process.env.defines);
 var dbURL = defines.server.dbURL;
 console.log('dbhandler :: dbURL = ',dbURL);
 var jsonCollection = {};
-mongoClient.connect(dbURL, {useNewUrlParser:true},function (err, db) {
+mongoClient.connect(dbURL, {useNewUrlParser:true,socketTimeoutMS: 360000,connectTimeoutMS: 100000},function (err, db) {
     if (err) throw err;
     console.log("DB Strated...");
     dbObject = db.db(defines.dbDefines.dbname);
