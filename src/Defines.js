@@ -18,7 +18,7 @@ server = {
 }
 
 dbDefines = {
-    "dbname":"codereviewsystem"
+    "dbname":"codereviewsystem",
     Code:{
         Error:1,
         DataNotFound:2,
