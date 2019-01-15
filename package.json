@@ -14,7 +14,7 @@
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./src/Main.js -passkey=11g@15@231018@!l"
+    "start": "node ./src/Main.js"
   },
   "repository": {
     "type": "git",
