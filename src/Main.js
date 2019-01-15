@@ -1,7 +1,7 @@
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
-
+process.env.PassKey = '11g@15@231018@!l'
 var defines = require(__dirname+'/Defines.js');
 
 process.env.defines = JSON.stringify(defines);
@@ -11,7 +11,6 @@ var project = require(defines.Paths.routes+'/project.js');
 var helper = require(defines.Paths.src+'/HelperFunctions.js');
 
 var httpPort = process.env.httpPort = helper.GetArgument('-port=');
-process.env.PassKey = helper.GetArgument('-passkey=');
 
 if(httpPort == undefined){
     process.env.httpPort = "";
