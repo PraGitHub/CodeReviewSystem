@@ -22,21 +22,21 @@ var GetKey = function(listOfStrings){
    }
    var strMasterData = listKeyOfEachStrings.join(strTime);
    var strMasterKey = Encrypt(strMasterData,strTime);
-   console.log('GetKey :: strMasterKey = ',strMasterKey);
+   //console.log('GetKey :: strMasterKey = ',strMasterKey);
    return strMasterKey;
 }
 
 var Encrypt = function(strData,strKey){
     CryptrObj = GetCryptr(strKey);
     var strEncryptedData = CryptrObj.encrypt(strData);
-    console.log('Encrypt :: strEncryptedData = ',strEncryptedData);
+    //console.log('Encrypt :: strEncryptedData = ',strEncryptedData);
     return strEncryptedData;
 }
 
 var Decrypt = function(strData,strKey){
     CryptrObj = GetCryptr(strKey);
     var strDecryptedData = CryptrObj.decrypt(strData);
-    console.log('Decrypt :: strDecryptedData = ',strDecryptedData);
+    //console.log('Decrypt :: strDecryptedData = ',strDecryptedData);
     return strDecryptedData;
 }
 

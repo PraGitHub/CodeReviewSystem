@@ -104,6 +104,7 @@ function FrameDBURL(){
     var strPassword = cryptr.Decrypt(strEncryptedPassword,strPasskey);
     strdbURL = strdbURL.replace('<password>',strPassword);
     server.dbURL = strdbURL;
+    //console.log('Defines :: server = ',server);
 }
 
 FilljsonPaths();
@@ -115,5 +116,5 @@ module.exports.userKeys = userKeys;
 module.exports.mailDefines = mailDefines;
 module.exports.Paths = jsonPaths;
 module.exports.GenericCodes = GenericCodes;
-module.exports.TimeOutTime = '300000'// 5*60*1000 ms => 5 mins
-module.exports.server = server
+module.exports.TimeOutTime = '300000';// 5*60*1000 ms => 5 mins
+module.exports.server = server;

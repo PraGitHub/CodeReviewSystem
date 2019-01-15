@@ -4,6 +4,7 @@ var deasync = require('deasync');
 var defines = JSON.parse(process.env.defines);
 //var CollectionList = ['Projects','Users','SuperUser'];
 var dbURL = defines.server.dbURL;
+console.log('dbhandler :: dbURL = ',dbURL);
 var jsonCollection = {};
 mongoClient.connect(dbURL, {useNewUrlParser:true},function (err, db) {
     if (err) throw err;
