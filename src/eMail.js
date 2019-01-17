@@ -11,6 +11,7 @@ var deasync = require('deasync');
 
 var Send = function(strPasswordKey,strMailId,strSubject,strMessage){
     var strPassword = String(cryptr.Decrypt(strEncryptedPassword,strPasswordKey));
+    console.log('eMail :: strPassword = ',strPassword)
     var jsonReturn = {}
     jsonReturn['iResult'] = undefined;
     jsonReturn['response'] = undefined;
