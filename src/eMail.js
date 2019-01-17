@@ -36,7 +36,7 @@ var Send = function(strPasswordKey,strMailId,strSubject,strMessage){
     };
     
     transporter.sendMail(helperOptions, function (err, info) {
-        console.log('eMail :: info = ',info);
+        console.log('eMail :: info = ',info," err = ",err);
         if (err || info == undefined) {
             jsonReturn.iResult = defines.mailDefines.Error;
             jsonReturn.response = '';
