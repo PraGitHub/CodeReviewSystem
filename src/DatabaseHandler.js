@@ -3,8 +3,8 @@ var mongoClient = require('mongodb').MongoClient;
 var deasync = require('deasync');
 var defines = JSON.parse(process.env.defines);
 //var CollectionList = ['Projects','Users','SuperUser'];
-var dbURL = defines.server.dbURL;
-dbURL = 'mongodb://codereviewsystem:Qwerty1234!@ds257054.mlab.com:57054/codereviewsystem'
+var dbURL = string(defines.server.dbURL);
+//dbURL = 'mongodb://codereviewsystem:Qwerty1234!@ds257054.mlab.com:57054/codereviewsystem'
 console.log('dbhandler :: dbURL = ',dbURL);
 var jsonCollection = {};
 mongoClient.connect(dbURL, {useNewUrlParser:true,socketTimeoutMS: 360000,connectTimeoutMS: 100000},function (err, db) {

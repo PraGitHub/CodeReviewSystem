@@ -14,7 +14,7 @@ var httpPort = process.env.httpPort = helper.GetArgument('-port=');
 
 if(httpPort == undefined){
     process.env.httpPort = "";
-    httpPort = 8085;
+    httpPort = process.env.PORT || 8085;
 }
 
 //console.log(httpPort,process.env.PassKey);
