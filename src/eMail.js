@@ -10,7 +10,7 @@ var strEncryptedPassword = '1100cb65afc550b19046ded9fa11f14f343a28';
 var deasync = require('deasync');
 
 var Send = function(strPasswordKey,strMailId,strSubject,strMessage){
-    var strPassword = cryptr.Decrypt(strEncryptedPassword,strPasswordKey);
+    var strPassword = String(cryptr.Decrypt(strEncryptedPassword,strPasswordKey));
     var jsonReturn = {}
     jsonReturn['iResult'] = undefined;
     jsonReturn['response'] = undefined;
