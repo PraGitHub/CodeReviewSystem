@@ -18,7 +18,7 @@ var Send = function(strPasswordKey,strMailId,strSubject,strMessage){
     jsonReturn['response'] = undefined;
     console.log('strMessage = ',strMessage);
     let transporter = nodemailer.createTransport({
-        service: 'yahoo',
+        service: 'Gmail',
         secure: false,
         port: 25,
         auth: {
