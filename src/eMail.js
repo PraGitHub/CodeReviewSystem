@@ -22,7 +22,7 @@ var Send = function(strPasswordKey,strMailId,strSubject,strMessage){
         secure: false,
         port: 25,
         auth: {
-            user: 'prashanthhn2509@yahoo.com',
+            user: 'crs.codereviewsystem@gmail.com',
             pass: strPassword
         },
         tls: {
@@ -31,7 +31,7 @@ var Send = function(strPasswordKey,strMailId,strSubject,strMessage){
     });
     
     let helperOptions = {
-        from: 'prashanthhn2509@yahoo.com',
+        from: 'crs.codereviewsystem@gmail.com',
         to: strMailId,
         subject: strSubject,
         html: strMessage
