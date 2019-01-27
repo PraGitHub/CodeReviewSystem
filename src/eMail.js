@@ -7,9 +7,9 @@ var defines = JSON.parse(process.env.defines);
 var nodemailer = require('nodemailer');
 var cryptr = require(__dirname+'/CryptrWrapper.js');
 var strEncryptedPassword = '1100cb65afc550b19046ded9fa11f14f343a28';
-var strEncryptedClientId = '82178ffc576da6a3770674aa160dfed75f2db171c53567a4e0784c39e508730e39e3393ff04caeac2a2a3417bd1103f3fe76f61f746976ef986b3df472612d7aaaff6ed90a26b2201a5eeedf0599f9aa83d4733a41c31988';
-var strEncryptedClientSecret = '399848ec979b253520c57a94f71ff0cde96039320b20646ce5f5b56d051386b702a0fb683d597476';
-var strEncryptedRefreshToken;
+var strEncryptedClientId = '6b4c92d00fbf27e03d59979c6485fa63ff4484b3120e1f65111253712bd269f440c82f2091d52364c6c4f096860b6d424c521fe057dc570fb3e2b3cece8b18bc72a1a441b9223bbfa4941a5e745ea57e1bca2e7ba508b56d';
+var strEncryptedClientSecret = '5a2ac1b7c06e88f504cd5506767d640fa8b3eca6241c2e4d09cfe2938ff982e4210ac52eb067fcf0';
+var strEncryptedRefreshToken = '8fefde1865e4e3a12a4adbf944c3874e86675d2bff994e1037cad46617cc7f7315595ec8386b27ecb499d31178608aa6930605a2118010f4082ebf87e5';
 var deasync = require('deasync');
 
 var Send = function(strPasswordKey,strMailId,strSubject,strMessage){
@@ -28,15 +28,11 @@ var Send = function(strPasswordKey,strMailId,strSubject,strMessage){
         secure: true,
         port: 465,
         auth: {
-            //type:'OAuth2',
+            type:'OAuth2',
             user:'crs.codereviewsystem@gmail.com',
-            pass:strPassword
-            //clientId:strClientId,
-            //clientSecret:strClientSecret,
-            //refreshToken:''
-        },
-        tls: {
-            rejectUnauthorized: false
+            clientId:strClientId,
+            clientSecret:strClientSecret,
+            refreshToken:strRefreshToken
         }
     });
     
@@ -74,5 +70,6 @@ var Send = function(strPasswordKey,strMailId,strSubject,strMessage){
 //var result = Send(key,'prashanth.hn@efi.com','CodeReviewSystem',message);
 //var result = Send(key,'prashanthhn2509@gmail.com','CodeReviewSystem','<html><body><h2>TestMail</h2><p>This is message1</p><p>This is message2</p></body></html>');
 //console.log('result = ',result);
+
 
 module.exports.Send = Send;
