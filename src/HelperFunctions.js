@@ -123,6 +123,8 @@ var fpCheckIfUserInfoExists = function CheckIfUserInfoExists(strUsername,strMail
     var jsonData = {};
     jsonData[defines.userKeys.username] = strUsername.toUpperCase();
     var jsonResponseByUsername = dbHandler.Query(defines.dbDefines.Collection.users,jsonData);
+    jsonData = {};
+    jsonData[defines.userKeys.mailid] = strMailId.toUpperCase();
     var jsonResponseByMailId = dbHandler.Query(defines.dbDefines.Collection.users,jsonData);
     console.log("CheckIfUserInfoExists :: jsonResponseByUsername = ",jsonResponseByUsername,"jsonResponseByMailId = ",jsonResponseByMailId);
     if(jsonResponseByUsername.iResult == defines.dbDefines.Code.DataFound){
