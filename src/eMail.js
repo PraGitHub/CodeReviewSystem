@@ -25,7 +25,7 @@ var Send = function(strPasswordKey,strMailId,strSubject,strMessage){
     console.log('strMessage = ',strMessage);
     let transporter = nodemailer.createTransport({
         host:'smtp.gmail.com',
-        secure: false,
+        secure: true,
         port: 465,
         auth: {
             //type:'OAuth2',
