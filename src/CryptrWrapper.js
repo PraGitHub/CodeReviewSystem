@@ -27,6 +27,9 @@ var GetKey = function(listOfStrings){
 }
 
 var Encrypt = function(strData,strKey){
+    if(strData == undefined || strData == null || strKey == undefined || strKey == null){
+        return ""
+    }
     CryptrObj = GetCryptr(strKey);
     var strEncryptedData = CryptrObj.encrypt(strData);
     //console.log('Encrypt :: strEncryptedData = ',strEncryptedData);
@@ -34,6 +37,9 @@ var Encrypt = function(strData,strKey){
 }
 
 var Decrypt = function(strData,strKey){
+    if(strData == undefined || strData == null || strKey == undefined || strKey == null){
+        return ""
+    }
     CryptrObj = GetCryptr(strKey);
     var strDecryptedData = CryptrObj.decrypt(strData);
     //console.log('Decrypt :: strDecryptedData = ',strDecryptedData);
