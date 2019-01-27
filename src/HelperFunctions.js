@@ -124,6 +124,7 @@ var fpCheckIfUserInfoExists = function CheckIfUserInfoExists(strUsername,strMail
     jsonData[defines.userKeys.username] = strUsername.toUpperCase();
     var jsonResponseByUsername = dbHandler.Query(defines.dbDefines.Collection.users,jsonData);
     var jsonResponseByMailId = dbHandler.Query(defines.dbDefines.Collection.users,jsonData);
+    console.log("CheckIfUserInfoExists :: jsonResponseByUsername = ",jsonResponseByUsername,"jsonResponseByMailId = ",jsonResponseByMailId);
     if(jsonResponseByUsername.iResult == defines.dbDefines.Code.DataFound){
         if(jsonResponseByMailId.iResult == defines.dbDefines.Code.DataFound){
             if(jsonResponseByMailId.arrayjsonResult[0][defines.userKeys.username] == jsonResponseByUsername.arrayjsonResult[0][defines.userKeys.username]){
