@@ -18,6 +18,7 @@ var Send = function(strPasswordKey,strMailId,strSubject,strMessage){
     jsonReturn['response'] = undefined;
     console.log('strMessage = ',strMessage);
     let transporter = nodemailer.createTransport({
+        host:'smtp.gmail.com',
         service: 'Gmail',
         secure: false,
         port: 25,
