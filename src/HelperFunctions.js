@@ -387,6 +387,7 @@ var fpProcessPasswordChangeRequest = function ProcessPasswordChangeRequest(strUs
        return defines.GenericCodes.UserNotFound;
    }
    var jsonUserData = jsonResult.arrayjsonResult[0];
+   console.log("ProcessPasswordChangeRequest :: defines.userKeys = ",defines.userKeys);
    var strUserKey = jsonUserData[defines.userKeys.key];
    var strPassword = jsonUserData[defines.userKeys.password];
 
