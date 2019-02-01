@@ -27,7 +27,8 @@ dbDefines = {
         DataNotAdded:5,
         DataDeleted:6,
         DataUpdated:7,
-        DataUpdateNotRequired:8
+        DataUpdateNotRequired:8,
+        Unknown:9
     },
     Collection:{
         projects:'Projects',

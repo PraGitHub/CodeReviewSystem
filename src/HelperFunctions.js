@@ -236,14 +236,14 @@ var fpIsAnyKeyUndefined = function IsAnyKeyUndefined(jsonIn){
 var fpProcessUserdata = function ProcessUserdata(strEncryptedUsername,strEncryptedData){
     var jsonReturn = {};
     var strPasswordKey = process.env.PassKey;
-    jsonReturn['iResult'] = defines.dbDefines.Unknown; //just initialising
+    jsonReturn['iResult'] = defines.dbDefines.Code.Unknown; //just initialising
     jsonReturn['jsonUserData'] = {};
     var strUsername = cryptr.Decrypt(strEncryptedUsername,strPasswordKey);
     strUsername = strUsername.toUpperCase();
     var jsonQuery = {};
     jsonQuery[defines.userKeys.username] = strUsername;
     var jsonResponse = dbHandler.Query(defines.dbDefines.Collection.users,jsonQuery);
-    if(jsonResponse.iResult == defines.dbDefines.DataNotFound){
+    if(jsonResponse.iResult == defines.dbDefines.Code.DataNotFound){
         jsonReturn.iResult =  defines.GenericCodes.UserNotFound;
         return jsonReturn;
     }
@@ -383,7 +383,7 @@ var fpProcessPasswordChangeRequest = function ProcessPasswordChangeRequest(strUs
    jsonQuery[defines.userKeys.username] = strUsername;
    jsonQuery[defines.userKeys.mailid] = strMailId;
    var jsonResult = dbHandler.Query(defines.dbDefines.Collection.users,jsonQuery);
-   if(jsonResult.iResult == defines.dbDefines.DataNotFound){
+   if(jsonResult.iResult == defines.dbDefines.Code.DataNotFound){
        return defines.GenericCodes.UserNotFound;
    }
    var jsonUserData = jsonResult.arrayjsonResult[0];
@@ -411,10 +411,10 @@ var fpProcessPasswordChangeRequest = function ProcessPasswordChangeRequest(strUs
    var jsonToDB = {};
    jsonToDB[defines.userKeys.passwordchangerequested] = true;
    var jsonDBResponse = dbHandler.Update(defines.dbDefines.Collection.users,jsonQuery,jsonToDB);
-   if(jsonDBResponse.iResult == defines.dbDefines.Error){
+   if(jsonDBResponse.iResult == defines.dbDefines.Code.Error){
        return defines.GenericCodes.DatabaseError;
    }
-   if(jsonDBResponse.iResult == defines.dbDefines.DataNotFound){
+   if(jsonDBResponse.iResult == defines.dbDefines.Code.DataNotFound){
        return defines.GenericCodes.UserNotFound;
    }
 
@@ -449,10 +449,10 @@ var fpUpdatePassword = function UpdatePassword(strUsername,strPassword){
     var jsonQuery = {};
     jsonQuery[defines.userKeys.username] = strUsername.toUpperCase();
     var jsonDBResponse = dbHandler.Query(defines.dbDefines.Collection.users,jsonQuery);
-    if(jsonDBResponse.iResult == defines.dbDefines.Error){
+    if(jsonDBResponse.iResult == defines.dbDefines.Code.Error){
         return defines.GenericCodes.DatabaseError;
     }
-    if(jsonDBResponse.iResult == defines.dbDefines.DataNotFound){
+    if(jsonDBResponse.iResult == defines.dbDefines.Code.DataNotFound){
         return defines.GenericCodes.UserNotFound;
     }
     var jsonUserProfile = jsonDBResponse.arrayjsonResult[0];
@@ -464,7 +464,7 @@ var fpUpdatePassword = function UpdatePassword(strUsername,strPassword){
     jsonToDB[defines.userKeys.passwordchangerequested] = false;
     jsonDBResponse = dbHandler.Update(defines.dbDefines.Collection.users,jsonQuery,jsonToDB);
 
-    if(jsonDBResponse.iResult == defines.dbDefines.Error){
+    if(jsonDBResponse.iResult == defines.dbDefines.Code.Error){
         return defines.GenericCodes.DatabaseError;
     }
 
