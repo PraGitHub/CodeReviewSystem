@@ -1,6 +1,8 @@
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
+var expressSession = require('express-session');
 process.env.PassKey = '11g@15@231018@!l'
 var defines = require(__dirname+'/Defines.js');
 
@@ -21,6 +23,8 @@ if(httpPort == undefined){
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
+app.use(cookieParser());
+app.use(expressSession({secret:'crs.secret'}));
 app.use('/user',user);
 app.use('/project',project);
 

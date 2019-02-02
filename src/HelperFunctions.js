@@ -119,6 +119,28 @@ var fpIsSuperuser = function IsSuperuser(strUsername,strPassword){
    return bRetVal;
 }
 
+var fpCheckIfUserCanLogin = function CheckIfUserCanLogin(strUsername,strPassword,bUsePassword = true){
+    var jsonData = {};
+    var jsonResult = {};
+    jsonResult["iResult"] = defines.GenericCodes.UserNotFound;
+    jsonResult["jsonData"] = null;
+    jsonData[defines.userKeys.username] = strUsername.toUpperCase();
+    if(bUsePassword == true){
+        jsonData[defines.userKeys.password] = strPassword;
+    }
+    var jsonResponse = dbHandler.Query(defines.dbDefines.Collection.users,jsonData);
+    //console.log("CheckIfUserInfoExists :: jsonResponseByUsername = ",jsonResponseByUsername,"jsonResponseByMailId = ",jsonResponseByMailId);
+    if(jsonResponse.iResult == defines.dbDefines.Code.DataFound){
+        if(jsonResponse.arrayjsonResult[0][defines.userKeys.verified] == false){
+            jsonResult["iResult"] = defines.GenericCodes.NeedToVerify;
+        }
+        jsonResult["iResult"] = defines.GenericCodes.Success;
+        jsonResult["jsonData"] = jsonResponse.arrayjsonResult[0];
+        return jsonResult;
+    }
+    return jsonResult;
+}
+
 var fpCheckIfUserInfoExists = function CheckIfUserInfoExists(strUsername,strMailId){
     var jsonData = {};
     jsonData[defines.userKeys.username] = strUsername.toUpperCase();
@@ -487,3 +509,4 @@ module.exports.ProcessUserdata = fpProcessUserdata;
 module.exports.IsRecentRequest = fpIsRecentRequest;
 module.exports.CheckTimeOut = fpCheckTimeOut;
 module.exports.GetPasswordChangeHTML = fpGetPasswordChangeHTML;
+module.exports.CheckIfUserCanLogin = fpCheckIfUserCanLogin;

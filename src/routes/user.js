@@ -346,6 +346,21 @@ router.post('/password/change',function(httpReq,httpRes){
 
 router.post('/login',function(httpReq,httpRes){
     console.log("/user.js :: /login :: httpReq.body = ",httpReq.body);
+    console.log("/user.js :: /login :: httpReq.cookie = ",httpReq.cookie);
+    console.log("/user.js :: /login :: httpReq.session = ",httpReq.session);
+    console.log("/user.js :: /login :: httpReq.session.user = ",httpReq.session.user);
+    var jsonResut = {};
+    if(httpReq.session.user == undefined){
+        jsonResult = helper.CheckIfUserCanLogin(httpReq.body.Username,httpReq.body.Password);
+        if(jsonResut.iResult == defines.GenericCodes.Success){
+            httpReq.session.user = httpReq.body.Username;
+        }
+    }
+    else{
+        console.log("/user.js :: /login :: httpReq.session.user = ",httpReq.session.user);
+        jsonResult = helper.CheckIfUserCanLogin(httpReq.body.Username,httpReq.body.Password,false);
+    }
+    console.log("/ser.js :: /login :: jsonResult = ",jsonResult);
     httpRes.write(helper.GetHTMLResponse(
         {
             'message':'Not yet implemented ... ',
