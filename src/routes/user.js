@@ -345,7 +345,14 @@ router.post('/password/change',function(httpReq,httpRes){
 });
 
 router.post('/login',function(httpReq,httpRes){
-
+    console.log("/user.js :: /login :: httpReq.body = ",httpReq.body);
+    httpRes.write(helper.GetHTMLResponse(
+        {
+            'message':'Not yet implemented ... ',
+            'alert':'warning'
+        }
+    ));
+    httpRes.end();
 });
 
 module.exports = router;
