@@ -424,7 +424,7 @@ var fpProcessPasswordChangeRequest = function ProcessPasswordChangeRequest(strUs
    var strEncrptedTime = cryptr.Encrypt(strTime,strPasswordKey);
 
    var strURL = defines.server.protocol+'://'+defines.server.host+'/user/password/verification/'+strEncrptedTime+'/'+strEncryptedUsername+'/'+strEncryptedData;
-   strMessage += '<p>Click this link to proceed with password change process... </p>';
+   var strMessage = '<p>Click this link to proceed with password change process... </p>';
    strMessage += '<br>';
    strMessage += '<a href="'+strURL+'">'+'Change Password'+'</a><br>';
    var jsonResponseMail = email.Send(strPasswordKey,strMailId,'Password change request',strMessage);
