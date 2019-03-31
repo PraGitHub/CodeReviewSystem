@@ -351,7 +351,7 @@ var fpProcessNewUser = function ProcessNewUser(jsonProfile){
         strURL += strEncryptedData;
         strMessage += '<p>Please Click the below link to activate your account</p>';
         strMessage += '<br>';
-        strMessage += '<a href="'+strURL+'">'+strURL+'</a><br>'
+        strMessage += '<a href="'+strURL+'">'+'Verify my account'+'</a><br>'
 
         var jsonResponseMail = email.Send(strPasswordKey,jsonProfile['MailID'],'Verification Mail',strMessage);
         if(jsonResponseMail.iResult != defines.mailDefines.Success){
