@@ -351,7 +351,7 @@ var fpProcessNewUser = function ProcessNewUser(jsonProfile){
         strURL += strEncryptedData;
         strMessage += '<p>Please Click the below link to activate your account</p>';
         strMessage += '<br>';
-        strMessage += '<a href="'+strURL+'">'+'Verify my account'+'</a><br>'
+        strMessage += '<a href="'+strURL+'">'+'Verify my account'+'</a><br>';
 
         var jsonResponseMail = email.Send(strPasswordKey,jsonProfile['MailID'],'Verification Mail',strMessage);
         if(jsonResponseMail.iResult != defines.mailDefines.Success){
@@ -424,7 +424,9 @@ var fpProcessPasswordChangeRequest = function ProcessPasswordChangeRequest(strUs
    var strEncrptedTime = cryptr.Encrypt(strTime,strPasswordKey);
 
    var strURL = defines.server.protocol+'://'+defines.server.host+'/user/password/verification/'+strEncrptedTime+'/'+strEncryptedUsername+'/'+strEncryptedData;
-   var strMessage = 'Click this link to proceed with password change process... '+strURL;
+   strMessage += '<p>Click this link to proceed with password change process... </p>';
+   strMessage += '<br>';
+   strMessage += '<a href="'+strURL+'">'+'Change Password'+'</a><br>';
    var jsonResponseMail = email.Send(strPasswordKey,strMailId,'Password change request',strMessage);
    if(jsonResponseMail.iResult != defines.mailDefines.Success){
     return defines.GenericCodes.MailNotSent;
