@@ -6,19 +6,15 @@ look for npm nodemailer
 var defines = JSON.parse(process.env.defines);
 var nodemailer = require('nodemailer');
 var cryptr = require(__dirname+'/CryptrWrapper.js');
-var strEncryptedPassword = '1100cb65afc550b19046ded9fa11f14f343a28';
-var strEncryptedClientId = '6b4c92d00fbf27e03d59979c6485fa63ff4484b3120e1f65111253712bd269f440c82f2091d52364c6c4f096860b6d424c521fe057dc570fb3e2b3cece8b18bc72a1a441b9223bbfa4941a5e745ea57e1bca2e7ba508b56d';
-var strEncryptedClientSecret = '5a2ac1b7c06e88f504cd5506767d640fa8b3eca6241c2e4d09cfe2938ff982e4210ac52eb067fcf0';
-var strEncryptedRefreshToken = '8fefde1865e4e3a12a4adbf944c3874e86675d2bff994e1037cad46617cc7f7315595ec8386b27ecb499d31178608aa6930605a2118010f4082ebf87e5';
+var strEncryptedClientId = 'a43a6cf26f847dcefe8561adea12da87a2f523bbe5cb0d5f551df43cdfca55fe6eaadbec061ebffa31f11f0a7df0d67334ba0bbe4e47b2ef98cde18cbb6dc10ec0d6182d9e62e37a9f54713c4b2549620aee970cb36a3047139e53c88d683bb7e656eb50fe0c5770dcf0a55942b564cebdf28c8f3a8eeb10af7965d8226a10584892801ddf5590dad96099944242016fa5c5b157049670757318c5a7ecfe56648565d27234ae8650';
+var strEncryptedClientSecret = 'a5108b7f848ef2e647d65bf28234acbbb5d7fb945a5fbb8b75857bfe98477aafd9fb1aee9940a176457d6f471416ca877bf13a96334521db9e0f5a6d3238d7abed0bff8c84f05db9bb33470b4f2fc8b731fbdbf324efdb73d838aff2eeb7b0a0899a258d70208ef62f922997b4cbf592a130b474ba618ed9';
+var strEncryptedRefreshToken = 'c9ceb3ccf3217670ef95fe0d9bfbf4ba8502cafd63d7ee6f18d3746ff941c6e6e0e7d1ddbbe6ca41c65bcb7917c5037d907818e93f26adfc3d12eb28f39cf9e2c4d4b6c53b991dd5c1f140f765718f1bfd6ae541c4b037005724ff1df4b9401fc15e782e8c29a592e48b603114e47bb71733b525ac3ebd8149070684b405052047fc02df0c4ce9fab0da644228';
 var deasync = require('deasync');
 
 var Send = function(strPasswordKey,strMailId,strSubject,strMessage){
-    var strPassword = cryptr.Decrypt(strEncryptedPassword,strPasswordKey);
     var strClientId = cryptr.Decrypt(strEncryptedClientId,strPasswordKey);
     var strClientSecret = cryptr.Decrypt(strEncryptedClientSecret,strPasswordKey);
     var strRefreshToken = cryptr.Decrypt(strEncryptedRefreshToken,strPasswordKey);
-    strPassword = String(strPassword);
-    console.log('eMail :: strPassword = ',strPassword)
     var jsonReturn = {}
     jsonReturn['iResult'] = undefined;
     jsonReturn['response'] = undefined;
