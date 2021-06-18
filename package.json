@@ -9,7 +9,7 @@
     "cryptr": "^6.0.2",
     "deasync": "^0.1.20",
     "express": "^4.17.1",
-    "express-session": "^1.17.1",
+    "express-session": "^1.17.2",
     "mongodb": "^3.5.7",
     "nodemailer": "^4.7.0"
   },
