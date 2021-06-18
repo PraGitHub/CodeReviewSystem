@@ -14,7 +14,8 @@ var jsonPathKeys = {
 server = {
     "host":"codereviewsystem.herokuapp.com",
     "protocol":"https",
-    "dbURL":"mongodb://codereviewsystem:<password>@ds257054.mlab.com:57054/codereviewsystem"
+    // "dbURL":"mongodb://codereviewsystem:<password>@ds257054.mlab.com:57054/codereviewsystem"
+    "dbURL": "mongodb+srv://codereviewsystem:<password>@cluster0.d36x6.mongodb.net/codereviewsystem?retryWrites=true&w=majority"
 }
 
 dbDefines = {
