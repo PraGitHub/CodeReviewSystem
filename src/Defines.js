@@ -105,7 +105,7 @@ function FrameDBURL(){
     var strPasskey = process.env.PassKey;
     var strPassword = cryptr.Decrypt(strEncryptedPassword,strPasskey);
     console.log('defines :: FrameDBURL :: strPassword = ',strPassword)
-    strdbURL = strdbURL.replace('<password>',strPassword);
+    strdbURL = strdbURL.replace('<password>', encodeURI(strPassword));
     server.dbURL = strdbURL;
     //console.log('Defines :: server = ',server);
 }
