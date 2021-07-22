@@ -10,7 +10,7 @@
     "deasync": "^0.1.20",
     "express": "^4.17.1",
     "express-session": "^1.17.2",
-    "mongodb": "^3.5.7",
+    "mongodb": "^3.6.9",
     "nodemailer": "^6.4.16"
   },
   "devDependencies": {},
