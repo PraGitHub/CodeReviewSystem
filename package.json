@@ -4,11 +4,11 @@
   "description": "NodeJS   |   MongoDB   |   html5+bootstrap4+AngularJS",
   "main": "HelperFunctions.js",
   "dependencies": {
-    "body-parser": "^1.19.0",
+    "body-parser": "^1.19.2",
     "cookie-parser": "^1.4.5",
     "cryptr": "^6.0.2",
     "deasync": "^0.1.20",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "express-session": "^1.17.2",
     "mongodb": "^3.5.7",
     "nodemailer": "^6.7.2"
